@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="de.slothsoft.mavenview.MavenView"
+            icon="icons/maven-view.gif"
+            id="de.slothsoft.mavenview.MavenView"
+            inject="true"
+            name="Maven">
+      </view>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="de.slothsoft.mavenview.MavenView"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.views.ProblemView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</fragment>
