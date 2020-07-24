@@ -2,7 +2,7 @@
 <feature
       id="de.slothsoft.mavenview.feature"
       label="Maven View Plug-in"
-      version="1.0.0"
+      version="1.1.0.qualifier"
       provider-name="Slothsoft">
 
    <description url="https://github.com/slothsoft/eclipse-maven-view/wiki">
