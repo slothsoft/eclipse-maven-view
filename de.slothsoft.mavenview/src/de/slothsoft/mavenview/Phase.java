@@ -2,10 +2,9 @@ package de.slothsoft.mavenview;
 
 import org.eclipse.swt.graphics.Image;
 
-import de.slothsoft.mavenview.MavenViewImages;
-import de.slothsoft.mavenview.MavenViewPlugin;
-
 public enum Phase implements Displayable {
+	CLEAN,
+
 	VALIDATE,
 
 	COMPILE,
@@ -20,16 +19,31 @@ public enum Phase implements Displayable {
 
 	DEPLOY,
 
+	SITE,
+
+	SITE_DEPLOY,
+
 	;
 
 	@Override
 	public String getDisplayName() {
-		return name().toLowerCase();
+		return name().toLowerCase().replace("_", "-");
 	}
 
 	@Override
 	public Image getImage() {
-		return MavenViewPlugin.getImage(MavenViewImages.OBJ_PHASE);
+		switch (this) {
+			case CLEAN :
+				return MavenViewPlugin.getImage(MavenViewImages.OBJ_PHASE_CLEAN);
+
+			case SITE :
+			case SITE_DEPLOY :
+				return MavenViewPlugin.getImage(MavenViewImages.OBJ_PHASE_SITE);
+
+			default :
+				return MavenViewPlugin.getImage(MavenViewImages.OBJ_PHASE);
+		}
+
 	}
 
 }

@@ -2,15 +2,58 @@
 <?eclipse version="3.4"?>
 <fragment>
 
+   
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            class="de.slothsoft.mavenview.MavenView"
-            icon="icons/maven-view.gif"
-            id="de.slothsoft.mavenview.MavenView"
-            inject="true"
-            name="Maven">
-      </view>
+         point="org.eclipse.ui.commands">
+      <command
+            id="de.slothsoft.mavenview.commands.runMavenPhases"
+            name="%command.runMavenPhases">
+      </command>
+      <command
+            id="de.slothsoft.mavenview.commands.refresh"
+            name="%command.refresh">
+      </command>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="de.slothsoft.mavenview.commands.runMavenPhases"
+            icon="icons/run.png">
+      </image>
+      <image
+            commandId="de.slothsoft.mavenview.commands.refresh"
+            icon="icons/refresh.png">
+      </image>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="de.slothsoft.mavenview.internal.RunMavenPhasesHandler"
+            commandId="de.slothsoft.mavenview.commands.runMavenPhases">
+      </handler>
+      <handler
+            class="de.slothsoft.mavenview.internal.RefreshHandler"
+            commandId="de.slothsoft.mavenview.commands.refresh">
+      </handler>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="toolbar:de.slothsoft.mavenview.MavenView">
+         <command
+               commandId="de.slothsoft.mavenview.commands.runMavenPhases"
+               id="runMavenPhases" />
+         <separator
+               name="de.slothsoft.mavenview.separator1"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.slothsoft.mavenview.commands.refresh"
+               id="refresh" />
+      </menuContribution>
    </extension>
    
    <extension
@@ -25,5 +68,15 @@
          </view>
       </perspectiveExtension>
    </extension>
-
+   
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="de.slothsoft.mavenview.MavenView"
+            icon="icons/maven.png"
+            id="de.slothsoft.mavenview.MavenView"
+            inject="true"
+            name="Maven">
+      </view>
+   </extension>
 </fragment>

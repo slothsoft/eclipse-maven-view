@@ -23,16 +23,23 @@ public class MavenView extends ViewPart {
 		this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
 		this.viewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
+		this.viewer.setLabelProvider(new ProjectTreeLabelProvider());
 		this.viewer.setContentProvider(new ProjectTreeContentProvider());
 		this.viewer.setInput(ProjectTreeContentProvider.fetchMavenProjects());
-		this.viewer.setLabelProvider(new ProjectTreeLabelProvider());
 		this.viewer.expandAll();
 
 		getSite().setSelectionProvider(this.viewer);
+	}
+
+	public void refresh() {
+		final Object[] expandedElements = this.viewer.getExpandedElements();
+		this.viewer.setInput(ProjectTreeContentProvider.fetchMavenProjects());
+		this.viewer.setExpandedElements(expandedElements);
 	}
 
 	@Override
 	public void setFocus() {
 		this.viewer.getControl().setFocus();
 	}
+
 }

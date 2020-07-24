@@ -3,11 +3,10 @@ package de.slothsoft.mavenview.internal.tree;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.graphics.Image;
 
 import de.slothsoft.mavenview.Displayable;
-import de.slothsoft.mavenview.MavenViewImages;
-import de.slothsoft.mavenview.MavenViewPlugin;
 import de.slothsoft.mavenview.Phase;
 
 public class PhaseNode implements Displayable {
@@ -24,6 +23,14 @@ public class PhaseNode implements Displayable {
 		this.phase = Objects.requireNonNull(phase);
 	}
 
+	public Phase getPhase() {
+		return this.phase;
+	}
+
+	public IProject getProject() {
+		return this.mavenProject.getProjectResource();
+	}
+
 	@Override
 	public String getDisplayName() {
 		return this.phase.getDisplayName();
@@ -31,7 +38,24 @@ public class PhaseNode implements Displayable {
 
 	@Override
 	public Image getImage() {
-		return MavenViewPlugin.getImage(MavenViewImages.OBJ_PHASE);
+		return this.phase.getImage();
+	}
+
+	@Override
+	public int hashCode() {
+		return 3 * Objects.hash(this.mavenProject, this.phase);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+
+		final PhaseNode that = (PhaseNode) obj;
+		if (!Objects.equals(this.mavenProject, that.mavenProject)) return false;
+		if (this.phase != that.phase) return false;
+		return true;
 	}
 
 }

@@ -5,8 +5,8 @@
       version="1.0.0.qualifier"
       provider-name="Slothsoft">
 
-   <description url="https://github.com/slothsoft/eclipse-plugins/wiki/Builder-Pattern-Plug-in">
-      A small plug-in that helps you create not only getters and setters, but builder methods, too. Works very similar (and is actually based on) the Getter / Setter dialog in the Eclipse JDT.
+   <description url="https://github.com/slothsoft/eclipse-maven-view/wiki">
+      A plug-in that recreates IntelliJ IDEA&apos;s Maven View for Eclipse.
    </description>
 
    <copyright url="http://www.example.com/copyright">
@@ -42,7 +42,6 @@ SOFTWARE.
          download-size="0"
          install-size="0"
          version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
 </feature>

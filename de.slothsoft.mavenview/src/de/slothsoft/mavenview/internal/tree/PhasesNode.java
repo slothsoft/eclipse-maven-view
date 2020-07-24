@@ -7,7 +7,6 @@ import org.eclipse.swt.graphics.Image;
 import de.slothsoft.mavenview.Displayable;
 import de.slothsoft.mavenview.MavenViewImages;
 import de.slothsoft.mavenview.MavenViewPlugin;
-import de.slothsoft.mavenview.Parentable;
 
 public class PhasesNode implements Displayable, Parentable {
 
@@ -30,5 +29,21 @@ public class PhasesNode implements Displayable, Parentable {
 	@Override
 	public Object[] getChildren() {
 		return PhaseNode.createAll(this.mavenProject);
+	}
+
+	@Override
+	public int hashCode() {
+		return 5 * Objects.hash(this.mavenProject);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+
+		final PhasesNode that = (PhasesNode) obj;
+		if (!Objects.equals(this.mavenProject, that.mavenProject)) return false;
+		return true;
 	}
 }

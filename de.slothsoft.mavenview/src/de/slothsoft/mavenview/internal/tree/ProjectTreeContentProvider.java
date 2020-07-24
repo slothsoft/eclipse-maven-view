@@ -9,8 +9,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
-import de.slothsoft.mavenview.Parentable;
-
 public class ProjectTreeContentProvider implements ITreeContentProvider {
 
 	static final String MAVEN_NATURE = "org.eclipse.m2e.core.maven2Nature";

@@ -1,15 +1,6 @@
 #  Eclipse Maven View
 
-- search for "builder" and or "pattern"
-- check readme, pom.xml, etc.
-- create wiki
-- update update-site
-- append to update-site wiki
-- check feature
-
-
-
-[![Build Status](https://travis-ci.org/slothsoft/eclipse-maven-view.svg?branch=master)](https://travis-ci.org/slothsoft/eclipse-maven-view)
+[![Build Status](https://travis-ci.com/slothsoft/eclipse-maven-view.svg?token=pRvfs6NqugbPyMWZEJBY&branch=master)](https://travis-ci.com/slothsoft/eclipse-maven-view)
 
 - **Author:** [Stef Schulz](mailto:s.schulz@slothsoft.de)
 - **Repository:** <https://github.com/slothsoft/eclipse-maven-view>
@@ -17,11 +8,13 @@
 - **Wiki:** <https://github.com/slothsoft/eclipse-maven-view/wiki>
 
 
-A small plug-in that helps you create not only getters and setters, but fluent methods, too. Works very similar (and is actually based on) the getter / setter dialog in the Eclipse JDT.
+A plug-in that recreates IntelliJ IDEA&apos;s Maven View for Eclipse.
 
-We call these methods "builder pattern" at work, because [Builders](https://en.wikipedia.org/wiki/Builder_pattern) where the first classes that used these methods.
+**To Do List:**
 
-![Screenshot](https://raw.githubusercontent.com/slothsoft/eclipse-maven-view/master/readme/dialog.png)
+- create wiki
+- update update-site
+- append to update-site wiki
 
 
 
@@ -46,15 +39,10 @@ You need at least **Java 8** or above to run the code.
 ##  Versions
 
 
-| Version       | Eclipse |
-| ------------- | ------- |
-| [1.2.1](https://github.com/slothsoft/eclipse-maven-view/milestone/4?closed=1) | `2018-12` |
-| [1.2.0](https://github.com/slothsoft/eclipse-maven-view/milestone/3?closed=1) | `2018-12` |
-| [1.1.0](https://github.com/slothsoft/eclipse-maven-view/milestone/2?closed=1) | `2018-09` |
-| [1.0.4](https://github.com/slothsoft/eclipse-maven-view/milestone/1?closed=1) | `oxygen`|
-| [1.0.x](https://github.com/slothsoft/eclipse-maven-view/milestone/1?closed=1) | `luna`|
+| Version       | Eclipse      | Description      |
+| ------------- | ------------ | ---------------- |
+| 1.0.0         | `2018-12` | Proof of concept |
    
-*For more information about the changes, take a look at the [wiki](https://github.com/slothsoft/eclipse-maven-view/wiki#change-log).*
 
 ## Features
 
@@ -62,4 +50,4 @@ You need at least **Java 8** or above to run the code.
 
 ## License
 
-This project is licensed under the MIT License - see the [MIT license](https://opensource.org/licenses/MIT) for details.
+This project is licensed under the MIT License - see the [MIT license](LICENSE) for details.

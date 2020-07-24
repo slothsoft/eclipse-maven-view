@@ -8,7 +8,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import de.slothsoft.mavenview.Displayable;
-import de.slothsoft.mavenview.Parentable;
 
 public class ProjectNode implements Displayable, Parentable {
 
@@ -36,5 +35,21 @@ public class ProjectNode implements Displayable, Parentable {
 	@Override
 	public Object[] getChildren() {
 		return PhaseNode.createAll(this);
+	}
+
+	@Override
+	public int hashCode() {
+		return 7 * Objects.hash(this.project);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+
+		final ProjectNode that = (ProjectNode) obj;
+		if (!Objects.equals(this.project.getName(), that.project.getName())) return false;
+		return true;
 	}
 }
