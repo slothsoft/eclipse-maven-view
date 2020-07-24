@@ -76,7 +76,7 @@
             icon="icons/maven.png"
             id="de.slothsoft.mavenview.MavenView"
             inject="true"
-            name="Maven">
+            name="%view.maven">
       </view>
    </extension>
 </fragment>
