@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.slothsoft.eclipse</groupId>
 	<artifactId>maven-view</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Maven View Plug-in</name>
@@ -145,7 +145,7 @@
 	<scm>
 		<developerConnection>scm:git:https://github.com/slothsoft/eclipse-maven-view.git</developerConnection>
 		<url>https://github.com/slothsoft/eclipse-maven-view</url>
-		<tag>1.0.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<licenses>
