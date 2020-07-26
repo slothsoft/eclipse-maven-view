@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Maven View Plug-in
 Bundle-SymbolicName: de.slothsoft.mavenview;singleton:=true
-Bundle-Version: 1.0.1.qualifier
+Bundle-Version: 1.0.1
 Bundle-Vendor: Slothsoft
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: de.slothsoft.mavenview
