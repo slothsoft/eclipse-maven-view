@@ -1,34 +1,20 @@
 package de.slothsoft.mavenview.internal.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
+
+import de.slothsoft.mavenview.InitialProjectSelection;
 
 public class ProjectTreeContentProvider implements ITreeContentProvider {
 
-	static final String MAVEN_NATURE = "org.eclipse.m2e.core.maven2Nature";
-
 	public static ProjectNode[] fetchMavenProjects() {
-		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		final IProject[] projects = workspaceRoot.getProjects();
+		final IProject[] projects = InitialProjectSelection.ROOT_PROJECTS.fetchMavenProjects();
+		final ProjectNode[] result = new ProjectNode[projects.length];
 
-		final List<ProjectNode> result = new ArrayList<>();
 		for (int i = 0; i < projects.length; i++) {
-			final IProject project = projects[i];
-			try {
-				if (project.isOpen() && project.hasNature(MAVEN_NATURE)) {
-					result.add(new ProjectNode(project));
-				}
-			} catch (final CoreException e) {
-				// we'll ignore this case
-			}
+			result[i] = new ProjectNode(projects[i]);
 		}
-		return result.toArray(new ProjectNode[result.size()]);
+		return result;
 	}
 
 	@Override
