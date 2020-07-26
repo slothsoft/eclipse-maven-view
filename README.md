@@ -13,10 +13,6 @@ A plug-in that recreates IntelliJ IDEA&apos;s Maven View for Eclipse.
 **To Do List:**
 
 - create wiki
-- update update-site
-- append to update-site wiki
-
-
 
 ## Getting Started
 
