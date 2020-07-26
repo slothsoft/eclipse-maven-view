@@ -8,11 +8,11 @@
 - **Wiki:** <https://github.com/slothsoft/eclipse-maven-view/wiki>
 
 
-A plug-in that recreates IntelliJ IDEA&apos;s Maven View for Eclipse.
+A plug-in that recreates IntelliJ IDEA&apos;s Maven View for Eclipse:
 
-**To Do List:**
+![view](readme/view.png)
 
-- create wiki
+
 
 ## Getting Started
 
@@ -37,12 +37,20 @@ You need at least **Java 8** or above to run the code.
 
 | Version       | Eclipse      | Description      |
 | ------------- | ------------ | ---------------- |
+| [1.0.1](https://github.com/slothsoft/eclipse-maven-view/milestone/1?closed=1)         | `2018-12` | Various bugfixes |
 | 1.0.0         | `2018-12` | Proof of concept |
    
 
 ## Features
 
 *See the [wiki](https://github.com/slothsoft/eclipse-maven-view/wiki) for more information.*
+
+
+
+## Developer Guide 
+
+- [Release Process](https://github.com/slothsoft/eclipse-update-site/wiki/Release-Process)
+
 
 ## License
 
