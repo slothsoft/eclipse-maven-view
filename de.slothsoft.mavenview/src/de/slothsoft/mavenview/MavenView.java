@@ -1,9 +1,11 @@
 package de.slothsoft.mavenview;
 
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
 import de.slothsoft.mavenview.internal.tree.ProjectTreeContentProvider;
@@ -28,6 +30,8 @@ public class MavenView extends ViewPart {
 		this.viewer.setInput(ProjectTreeContentProvider.fetchMavenProjects());
 		this.viewer.expandAll();
 
+		hookMenuToViewer();
+
 		getSite().setSelectionProvider(this.viewer);
 	}
 
@@ -35,6 +39,13 @@ public class MavenView extends ViewPart {
 		final Object[] expandedElements = this.viewer.getExpandedElements();
 		this.viewer.setInput(ProjectTreeContentProvider.fetchMavenProjects());
 		this.viewer.setExpandedElements(expandedElements);
+	}
+
+	private void hookMenuToViewer() {
+		final MenuManager menuManager = new MenuManager();
+		final Menu menu = menuManager.createContextMenu(this.viewer.getTree());
+		this.viewer.getTree().setMenu(menu);
+		getSite().registerContextMenu(menuManager, this.viewer);
 	}
 
 	@Override

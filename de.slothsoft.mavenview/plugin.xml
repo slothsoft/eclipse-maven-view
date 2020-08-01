@@ -54,6 +54,22 @@
                commandId="de.slothsoft.mavenview.commands.refresh"
                id="refresh" />
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:de.slothsoft.mavenview.MavenView">
+         <command
+               commandId="de.slothsoft.mavenview.commands.runMavenPhases"
+               id="runMavenPhases">
+         </command>
+         <separator
+               name="de.slothsoft.mavenview.separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.slothsoft.mavenview.commands.refresh"
+               id="refresh">
+         </command>
+      </menuContribution>
    </extension>
    
    <extension
