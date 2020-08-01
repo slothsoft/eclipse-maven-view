@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Maven View Test Plan
+Bundle-SymbolicName: de.slothsoft.mavenview.testplan;singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: Slothsoft
+Require-Bundle: de.slothsoft.mavenview,
+ org.apache.log4j;bundle-version="[1.2.15,2.0.0)",
+ org.eclipse.core.runtime;bundle-version="[3.15.100,4.0.0)",
+ org.eclipse.core.resources;bundle-version="[3.13.200,4.0.0)",
+ org.eclipse.m2e.core;bundle-version="[1.10.0,2.0.0)",
+ org.eclipse.m2e.core.ui;bundle-version="[1.10.0,2.0.0)",
+ org.eclipse.swtbot.eclipse.finder;bundle-version="[3.0.0,4.0.0)",
+ org.eclipse.swtbot.junit4_x;bundle-version="[3.0.0,4.0.0)",
+ org.eclipse.swtbot.swt.finder;bundle-version="[3.0.0,4.0.0)",
+ org.eclipse.ui;bundle-version="[3.111.0,4.0.0)",
+ org.junit;bundle-version="[4.12.0,5.0.0)"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .

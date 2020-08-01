@@ -1,0 +1,17 @@
+package de.slothsoft.mavenview.testplan.constants;
+
+/**
+ * Constants interface so I won't have to change these strings in millions of tests.
+ */
+
+public interface Common {
+
+	String BUTTON_OK = "OK";
+	String BUTTON_CANCEL = "Cancel";
+	String BUTTON_NEXT = "&Next >";
+	String BUTTON_FINISH = "&Finish";
+	String BUTTON_APPLY = "Apply and Close";
+	String BUTTON_OPEN = "Open";
+
+	String DATA_ID = "id";
+}
