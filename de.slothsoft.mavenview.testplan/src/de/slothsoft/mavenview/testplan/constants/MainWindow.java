@@ -13,6 +13,6 @@ public interface MainWindow {
 
 	String SHOW_VIEW_TITLE = "Show View";
 	String VIEW_TITLE = "Maven";
-	String VIEW_GROUP = "Other";
+	String VIEW_GROUP = "Maven";
 
 }

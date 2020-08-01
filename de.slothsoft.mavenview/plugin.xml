@@ -78,8 +78,7 @@
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <view
                id="de.slothsoft.mavenview.MavenView"
-               ratio="0.5"
-               relationship="right"
+               relationship="stack"
                relative="org.eclipse.ui.views.ProblemView">
          </view>
       </perspectiveExtension>
@@ -91,6 +90,7 @@
             class="de.slothsoft.mavenview.MavenView"
             icon="icons/maven.png"
             id="de.slothsoft.mavenview.MavenView"
+            category="org.eclipse.m2e.core.views.repositories"
             inject="true"
             name="%view.maven">
       </view>
