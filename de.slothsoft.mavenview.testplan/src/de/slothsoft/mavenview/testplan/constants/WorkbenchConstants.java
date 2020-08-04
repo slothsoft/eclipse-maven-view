@@ -1,6 +1,6 @@
 package de.slothsoft.mavenview.testplan.constants;
 
-public interface MainWindow {
+public interface WorkbenchConstants {
 
 	String MENU_FILE = "&File";
 	String MENU_RUN = "Run";
@@ -12,7 +12,4 @@ public interface MainWindow {
 	String SUB_MENU_NEW = "New";
 
 	String SHOW_VIEW_TITLE = "Show View";
-	String VIEW_TITLE = "Maven";
-	String VIEW_GROUP = "Maven";
-
 }

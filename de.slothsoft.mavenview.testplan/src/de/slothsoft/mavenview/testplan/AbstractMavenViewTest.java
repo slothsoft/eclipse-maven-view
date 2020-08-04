@@ -23,14 +23,15 @@ import org.junit.After;
 import org.junit.Before;
 
 import de.slothsoft.mavenview.MavenView;
-import de.slothsoft.mavenview.testplan.constants.Common;
-import de.slothsoft.mavenview.testplan.constants.MainWindow;
-import de.slothsoft.mavenview.testplan.constants.NewProject;
+import de.slothsoft.mavenview.testplan.constants.CommonConstants;
+import de.slothsoft.mavenview.testplan.constants.WorkbenchConstants;
+import de.slothsoft.mavenview.testplan.constants.MavenViewConstants;
+import de.slothsoft.mavenview.testplan.constants.NewProjectConstants;
 
 public abstract class AbstractMavenViewTest {
 
 	static {
-		System.setProperty("org.eclipse.swtbot.search.defaultKey", Common.DATA_ID);
+		System.setProperty("org.eclipse.swtbot.search.defaultKey", CommonConstants.DATA_ID);
 	}
 
 	protected final SWTWorkbenchBot bot = new SWTWorkbenchBot();
@@ -63,55 +64,57 @@ public abstract class AbstractMavenViewTest {
 	protected SWTBotView openMavenViewWithShowViewDialog() {
 		addToTearDown(this::clearShowViewDialog); // just in case
 
-		this.bot.menu(MainWindow.MENU_WINDOW).menu(MainWindow.SUB_MENU_SHOW_VIEW).menu(MainWindow.COMMAND_OTHER)
+		this.bot.menu(WorkbenchConstants.MENU_WINDOW).menu(WorkbenchConstants.SUB_MENU_SHOW_VIEW).menu(WorkbenchConstants.COMMAND_OTHER)
 				.click();
 
-		this.bot.waitUntil(Conditions.shellIsActive(MainWindow.SHOW_VIEW_TITLE));
+		this.bot.waitUntil(Conditions.shellIsActive(WorkbenchConstants.SHOW_VIEW_TITLE));
 
-		this.bot.text().setText(MainWindow.VIEW_TITLE);
+		this.bot.text().setText(MavenViewConstants.VIEW_TITLE);
 
 		// dunno why we have to expand, but it's necessary else the title is not found
-		this.bot.tree().getTreeItem(MainWindow.VIEW_GROUP).expand();
-		this.bot.tree().getTreeItem(MainWindow.VIEW_GROUP).getNode(MainWindow.VIEW_TITLE).select();
+		this.bot.tree().getTreeItem(MavenViewConstants.VIEW_GROUP).expand();
+		this.bot.tree().getTreeItem(MavenViewConstants.VIEW_GROUP).getNode(MavenViewConstants.VIEW_TITLE).select();
 
-		this.bot.button(Common.BUTTON_OPEN).click();
+		this.bot.button(CommonConstants.BUTTON_OPEN).click();
 
-		final SWTBotView result = this.bot.viewByTitle(MainWindow.VIEW_TITLE);
+		final SWTBotView result = this.bot.viewByTitle(MavenViewConstants.VIEW_TITLE);
 		addToTearDown(result::close);
 		return result;
 	}
 
 	private void clearShowViewDialog() {
 		final SWTBotShell activeShell = this.bot.activeShell();
-		if (MainWindow.SHOW_VIEW_TITLE.equals(activeShell.getText())) {
+		if (WorkbenchConstants.SHOW_VIEW_TITLE.equals(activeShell.getText())) {
 			activeShell.close();
 		}
 	}
 
-	protected IProject createMavenProject(String groupId, String artifactId, String version) {
+	protected IProject createMavenProject(MavenGav gav) {
 		addToTearDown(this::clearNewProjectDialog); // just in case
 
-		this.bot.menu(MainWindow.MENU_FILE).menu(MainWindow.SUB_MENU_NEW).menu(MainWindow.COMMAND_OTHER).click();
-		this.bot.waitUntil(Conditions.shellIsActive(NewProject.DIALOG_TITLE));
+		this.bot.menu(WorkbenchConstants.MENU_FILE).menu(WorkbenchConstants.SUB_MENU_NEW).menu(WorkbenchConstants.COMMAND_OTHER).click();
+		this.bot.waitUntil(Conditions.shellIsActive(NewProjectConstants.DIALOG_TITLE));
 
-		this.bot.tree().getTreeItem(NewProject.GROUP_MAVEN).expand();
-		this.bot.tree().getTreeItem(NewProject.GROUP_MAVEN).getNode(NewProject.PROJECT_MAVEN).select();
+		this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).expand();
+		this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).getNode(NewProjectConstants.PROJECT_MAVEN).select();
 
-		this.bot.button(Common.BUTTON_NEXT).click();
+		this.bot.button(CommonConstants.BUTTON_NEXT).click();
 
-		this.bot.checkBox(NewProject.MAVEN_SIMPLE_PROJECT).select();
+		this.bot.checkBox(NewProjectConstants.MAVEN_SIMPLE_PROJECT).select();
 
-		this.bot.button(Common.BUTTON_NEXT).click();
+		this.bot.button(CommonConstants.BUTTON_NEXT).click();
 
-		this.bot.comboBoxWithLabelInGroup(NewProject.MAVEN_GROUP_ID, NewProject.MAVEN_GROUP_ARTIFACT).setText(groupId);
-		this.bot.comboBoxWithLabelInGroup(NewProject.MAVEN_ARTIFACT_ID, NewProject.MAVEN_GROUP_ARTIFACT)
-				.setText(artifactId);
-		this.bot.comboBoxWithLabelInGroup(NewProject.MAVEN_VERSION, NewProject.MAVEN_GROUP_ARTIFACT).setText(version);
+		this.bot.comboBoxWithLabelInGroup(NewProjectConstants.MAVEN_GROUP_ID, NewProjectConstants.MAVEN_GROUP_ARTIFACT)
+				.setText(gav.groupId);
+		this.bot.comboBoxWithLabelInGroup(NewProjectConstants.MAVEN_ARTIFACT_ID, NewProjectConstants.MAVEN_GROUP_ARTIFACT)
+				.setText(gav.artifactId);
+		this.bot.comboBoxWithLabelInGroup(NewProjectConstants.MAVEN_VERSION, NewProjectConstants.MAVEN_GROUP_ARTIFACT)
+				.setText(gav.version);
 
-		this.bot.button(Common.BUTTON_FINISH).click();
+		this.bot.button(CommonConstants.BUTTON_FINISH).click();
 
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final IProject project = root.getProject(artifactId);
+		final IProject project = root.getProject(gav.artifactId);
 		addToTearDown(() -> {
 			try {
 				project.delete(true, null);
@@ -120,7 +123,7 @@ public abstract class AbstractMavenViewTest {
 			}
 		});
 
-		this.bot.waitUntil(Conditions.shellIsActive(NewProject.MAVEN_DISCOVER_M2E_CONNECTORS));
+		this.bot.waitUntil(Conditions.shellIsActive(NewProjectConstants.MAVEN_DISCOVER_M2E_CONNECTORS));
 		clearDiscoverM2ConnectorsDialog();
 
 		return project;
@@ -128,14 +131,14 @@ public abstract class AbstractMavenViewTest {
 
 	private void clearNewProjectDialog() {
 		final SWTBotShell activeShell = this.bot.activeShell();
-		if (NewProject.MAVEN_DISCOVER_M2E_CONNECTORS.equals(activeShell.getText())) {
+		if (NewProjectConstants.MAVEN_DISCOVER_M2E_CONNECTORS.equals(activeShell.getText())) {
 			activeShell.close();
 		}
 	}
 
 	private void clearDiscoverM2ConnectorsDialog() {
 		final SWTBotShell activeShell = this.bot.activeShell();
-		if (NewProject.MAVEN_DISCOVER_M2E_CONNECTORS.equals(activeShell.getText())) {
+		if (NewProjectConstants.MAVEN_DISCOVER_M2E_CONNECTORS.equals(activeShell.getText())) {
 			activeShell.close();
 		}
 	}

@@ -28,7 +28,7 @@ public class PhasesNode implements Displayable, Parentable {
 
 	@Override
 	public Object[] getChildren() {
-		return PhaseNode.createAll(this.mavenProject);
+		return PhaseNode.createDisplayed(this.mavenProject);
 	}
 
 	@Override

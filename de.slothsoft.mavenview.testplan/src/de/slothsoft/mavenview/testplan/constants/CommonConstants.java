@@ -4,7 +4,7 @@ package de.slothsoft.mavenview.testplan.constants;
  * Constants interface so I won't have to change these strings in millions of tests.
  */
 
-public interface Common {
+public interface CommonConstants {
 
 	String BUTTON_OK = "OK";
 	String BUTTON_CANCEL = "Cancel";

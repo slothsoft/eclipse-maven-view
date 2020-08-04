@@ -1,6 +1,6 @@
 package de.slothsoft.mavenview.testplan.constants;
 
-public interface NewProject {
+public interface NewProjectConstants {
 
 	String DIALOG_TITLE = "New";
 

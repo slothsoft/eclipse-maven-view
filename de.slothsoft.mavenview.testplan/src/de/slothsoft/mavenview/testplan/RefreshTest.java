@@ -8,7 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.slothsoft.mavenview.testplan.constants.MavenView;
+import de.slothsoft.mavenview.testplan.constants.MavenViewConstants;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class RefreshTest extends AbstractMavenViewTest {
@@ -17,9 +17,9 @@ public class RefreshTest extends AbstractMavenViewTest {
 	public void testR01_RefreshView() throws Exception {
 		final SWTBotView view = openMavenViewWithShowViewDialog();
 
-		final IProject project = createMavenProject("groupId", "artifactId", "1.2.3");
+		final IProject project = createMavenProject(new MavenGav());
 
-		view.toolbarButton(MavenView.COMMAND_REFRESH).click();
+		view.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
 
 		final SWTBotTree mavenProjectTree = view.bot().tree();
 		Assert.assertEquals(1, mavenProjectTree.getAllItems().length);

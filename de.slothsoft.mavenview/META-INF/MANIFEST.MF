@@ -19,3 +19,5 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="[3.13.200,4.0.0)",
  org.eclipse.ui;bundle-version="[3.111.0,4.0.0)",
  org.eclipse.ui.views;bundle-version="[3.9.200,4.0.0)"
 Bundle-Localization: OSGI-INF/l10n/bundle
+Bundle-Activator: de.slothsoft.mavenview.MavenViewPlugin
+Bundle-ActivationPolicy: lazy

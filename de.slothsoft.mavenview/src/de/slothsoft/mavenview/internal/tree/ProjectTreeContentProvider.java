@@ -3,12 +3,12 @@ package de.slothsoft.mavenview.internal.tree;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
-import de.slothsoft.mavenview.InitialProjectSelection;
+import de.slothsoft.mavenview.MavenViewPreferences;
 
 public class ProjectTreeContentProvider implements ITreeContentProvider {
 
 	public static ProjectNode[] fetchMavenProjects() {
-		final IProject[] projects = InitialProjectSelection.ROOT_PROJECTS.fetchMavenProjects();
+		final IProject[] projects = MavenViewPreferences.getInitialProjectSelection().fetchMavenProjects();
 		final ProjectNode[] result = new ProjectNode[projects.length];
 
 		for (int i = 0; i < projects.length; i++) {

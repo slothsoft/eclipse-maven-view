@@ -8,8 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
+import de.slothsoft.mavenview.internal.DisplayableLabelProvider;
 import de.slothsoft.mavenview.internal.tree.ProjectTreeContentProvider;
-import de.slothsoft.mavenview.internal.tree.ProjectTreeLabelProvider;
 
 public class MavenView extends ViewPart {
 
@@ -25,7 +25,7 @@ public class MavenView extends ViewPart {
 		this.viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 
 		this.viewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
-		this.viewer.setLabelProvider(new ProjectTreeLabelProvider());
+		this.viewer.setLabelProvider(new DisplayableLabelProvider());
 		this.viewer.setContentProvider(new ProjectTreeContentProvider());
 		this.viewer.setInput(ProjectTreeContentProvider.fetchMavenProjects());
 		this.viewer.expandAll();

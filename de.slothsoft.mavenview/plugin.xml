@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <fragment>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.slothsoft.mavenview.internal.PreferenceInitializer">
+      </initializer>
+   </extension>
 
    
    <extension
@@ -82,6 +88,15 @@
                relative="org.eclipse.ui.views.ProblemView">
          </view>
       </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.m2e.core.preferences.Maven2PreferencePage"
+            class="de.slothsoft.mavenview.internal.MavenViewPreferencePage"
+            id="de.slothsoft.mavenview.MavenViewPreferencePage"
+            name="%preferencePage.mavenView">
+      </page>
    </extension>
    
    <extension

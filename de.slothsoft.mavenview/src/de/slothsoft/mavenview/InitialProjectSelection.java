@@ -10,7 +10,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
-public enum InitialProjectSelection {
+public enum InitialProjectSelection implements Displayable {
 	ALL_PROJECTS {
 
 		@Override
@@ -72,6 +72,11 @@ public enum InitialProjectSelection {
 	};
 
 	static final String MAVEN_NATURE = "org.eclipse.m2e.core.maven2Nature";
+
+	@Override
+	public String getDisplayName() {
+		return Messages.getString("InitialProjectSelection." + name());
+	}
 
 	public abstract IProject[] fetchMavenProjects();
 

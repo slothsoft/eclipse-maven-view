@@ -34,7 +34,7 @@ public class ProjectNode implements Displayable, Parentable {
 
 	@Override
 	public Object[] getChildren() {
-		return PhaseNode.createAll(this);
+		return PhaseNode.createDisplayed(this);
 	}
 
 	@Override

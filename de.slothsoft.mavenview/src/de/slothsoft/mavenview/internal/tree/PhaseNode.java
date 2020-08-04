@@ -7,12 +7,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.graphics.Image;
 
 import de.slothsoft.mavenview.Displayable;
+import de.slothsoft.mavenview.MavenViewPreferences;
 import de.slothsoft.mavenview.Phase;
 
 public class PhaseNode implements Displayable {
 
-	static PhaseNode[] createAll(ProjectNode mavenProject) {
-		return Arrays.stream(Phase.values()).map(phase -> new PhaseNode(mavenProject, phase)).toArray(PhaseNode[]::new);
+	static PhaseNode[] createDisplayed(ProjectNode mavenProject) {
+		return Arrays.stream(MavenViewPreferences.getDisplayedPhases()).map(phase -> new PhaseNode(mavenProject, phase))
+				.toArray(PhaseNode[]::new);
 	}
 
 	private final ProjectNode mavenProject;
