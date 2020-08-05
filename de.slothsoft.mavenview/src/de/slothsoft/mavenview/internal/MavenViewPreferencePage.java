@@ -2,6 +2,7 @@ package de.slothsoft.mavenview.internal;
 
 import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -39,9 +40,13 @@ public class MavenViewPreferencePage extends FieldEditorPreferencePage implement
 
 	@Override
 	public void createFieldEditors() {
+		final Composite fieldEditorParent = getFieldEditorParent();
+
 		addField(new ComboFieldEditor(MavenViewPreferences.INITIAL_PROJECT_SELECTION,
 				Messages.getString("InitialProjectSelection") + ':',
-				createEntryNamesAndValues(InitialProjectSelection.values()), getFieldEditorParent()));
+				createEntryNamesAndValues(InitialProjectSelection.values()), fieldEditorParent));
+		fieldEditorParent.getChildren()[1].setData(CheckTableFieldEditor.DATA_ID,
+				MavenViewPreferences.INITIAL_PROJECT_SELECTION);
 
 		addField(new CheckTableFieldEditor(MavenViewPreferences.DISPLAYED_PHASES, getFieldEditorParent(),
 				Messages.getString("DisplayedPhases") + ':').labelProvider(new PhaseLabelProvider())

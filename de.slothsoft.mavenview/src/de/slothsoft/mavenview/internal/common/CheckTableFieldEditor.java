@@ -16,10 +16,12 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 public class CheckTableFieldEditor extends FieldEditor {
 
+	public static final String DATA_ID = "id";
 	private static final String SEPARATOR = "\n";
 
 	public interface PreferenceLabelProvider extends ILabelProvider {
@@ -61,11 +63,18 @@ public class CheckTableFieldEditor extends FieldEditor {
 		this.tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 		this.tableViewer.setLabelProvider(this.labelProvider);
 		this.tableViewer.setInput(this.input);
-		this.tableViewer.getControl().setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, this.heightHint).create());
 		this.tableViewer.addSelectionChangedListener(e -> valueChanged());
 
+		final Table table = this.tableViewer.getTable();
+		table.setLayoutData(createLayoutData());
+		table.setData(DATA_ID, getPreferenceName());
+
 		super.createControl(parent);
+	}
+
+	private GridData createLayoutData() {
+		return GridDataFactory.fillDefaults().grab(true, this.heightHint == SWT.DEFAULT)
+				.hint(SWT.DEFAULT, this.heightHint == SWT.DEFAULT ? 1 : this.heightHint).create();
 	}
 
 	void valueChanged() {
@@ -186,10 +195,7 @@ public class CheckTableFieldEditor extends FieldEditor {
 	public void setHeightHint(int heightHint) {
 		this.heightHint = heightHint;
 
-		final GridData gridData = ((GridData) this.tableViewer.getControl().getLayoutData());
-		gridData.heightHint = heightHint;
-		gridData.grabExcessVerticalSpace = heightHint == SWT.DEFAULT;
-
+		this.tableViewer.getControl().setLayoutData(createLayoutData());
 		this.tableViewer.getControl().getParent().layout(true, true);
 	}
 

@@ -8,6 +8,7 @@ public class MavenGav {
 	String groupId = "de.slothsoft.group";
 	String artifactId = UUID.randomUUID().toString();
 	String version = "0.0.1-SNAPSHOT";
+	String type = "jar";
 
 	public String getArtifactId() {
 		return this.artifactId;
@@ -46,6 +47,19 @@ public class MavenGav {
 
 	public void setVersion(String version) {
 		this.version = Objects.requireNonNull(version);
+	}
+
+	public String getType() {
+		return this.type;
+	}
+
+	public MavenGav type(String newType) {
+		setType(newType);
+		return this;
+	}
+
+	public void setType(String type) {
+		this.type = Objects.requireNonNull(type);
 	}
 
 }
