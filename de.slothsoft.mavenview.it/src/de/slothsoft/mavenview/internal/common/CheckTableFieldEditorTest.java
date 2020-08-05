@@ -157,6 +157,6 @@ public class CheckTableFieldEditorTest
 	@Ignore("This test does not work for Travis")
 	@Override
 	public void testSetFocus() throws Exception {
-		super.testSetFocus();
+		// remove
 	}
 }

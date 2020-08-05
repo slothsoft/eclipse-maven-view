@@ -32,6 +32,11 @@ You need at least **Java 8** or above to run the code.
 5. Select and install via "Finish"
      
 
+## Features
+
+*See the [wiki](https://github.com/slothsoft/eclipse-maven-view/wiki/User-Manual) for more information.*
+
+
 ##  Versions
 
 
@@ -41,15 +46,10 @@ You need at least **Java 8** or above to run the code.
 | 1.0.0         | `2018-12` | Proof of concept |
    
 
-## Features
-
-*See the [wiki](https://github.com/slothsoft/eclipse-maven-view/wiki) for more information.*
-
-
-
 ## Developer Guide 
 
 - [Release Process](https://github.com/slothsoft/eclipse-update-site/wiki/Release-Process)
+- [Test Plan](https://github.com/slothsoft/eclipse-maven-view/wiki/Test-Plan)
 
 
 ## License
