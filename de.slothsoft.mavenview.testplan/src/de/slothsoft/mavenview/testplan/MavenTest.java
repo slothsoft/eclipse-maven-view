@@ -4,6 +4,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotStyledText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarDropDownButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
@@ -19,6 +21,8 @@ import de.slothsoft.mavenview.testplan.constants.MavenViewConstants;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class MavenTest extends AbstractMavenViewTest {
+
+	private static final String SEPARATOR = "(?s)------------------------------------------------------------------------";
 
 	private IProject project1;
 	private IProject project2;
@@ -41,11 +45,29 @@ public class MavenTest extends AbstractMavenViewTest {
 		this.view.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
 
 		final SWTBotView consoleView = openConsoleView();
-		final String consoleText = consoleView.bot().styledText().getText();
+		final String consoleText = waitForSeparators(consoleView.bot().styledText(), 2);
 
-		Assert.assertTrue("Missing working directory: " + consoleText,
-				consoleText.contains("Working Directory: " + this.project1.getLocation().toOSString()));
+		Assert.assertTrue("Missing working directory for project " + this.project1.getName() + ": " + consoleText,
+				consoleText.matches("(?s)(.*)Working Directory: (.*)" + this.project1.getName() + "(.*)"));
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.contains("Phases: clean"));
+	}
+
+	private static String waitForSeparators(SWTBotStyledText styledText, int number) {
+		final long startTime = System.currentTimeMillis();
+
+		do {
+			final String text = styledText.getText();
+
+			if (text.split(SEPARATOR).length > number) return text;
+
+			try {
+				Thread.sleep(100);
+			} catch (final InterruptedException e) {
+				// just ignore
+			}
+		} while (System.currentTimeMillis() <= startTime + SWTBotPreferences.TIMEOUT);
+
+		return styledText.getText();
 	}
 
 	@Test
@@ -63,7 +85,7 @@ public class MavenTest extends AbstractMavenViewTest {
 		this.view.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
 
 		final SWTBotView consoleView = openConsoleView();
-		final String consoleText = consoleView.bot().styledText().getText();
+		final String consoleText = waitForSeparators(consoleView.bot().styledText(), 2);
 
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.contains("Phases: test install"));
 	}
@@ -84,7 +106,7 @@ public class MavenTest extends AbstractMavenViewTest {
 		this.view.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
 
 		final SWTBotView consoleView = openConsoleView();
-		String consoleText = consoleView.bot().styledText().getText();
+		String consoleText = waitForSeparators(consoleView.bot().styledText(), 2);
 
 		final String phasePattern = "(?s)(.*)Phases: (verify|compile)(.*)";
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.matches(phasePattern));
@@ -105,7 +127,7 @@ public class MavenTest extends AbstractMavenViewTest {
 			}
 		}).click();
 
-		consoleText = consoleView.bot().styledText().getText();
+		consoleText = waitForSeparators(consoleView.bot().styledText(), 2);
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.matches(phasePattern));
 	}
 
