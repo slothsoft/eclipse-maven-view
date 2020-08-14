@@ -15,9 +15,9 @@ public class RefreshTest extends AbstractMavenViewTest {
 
 	@Test
 	public void testR01_RefreshView() throws Exception {
-		final SWTBotView view = openMavenViewWithShowViewDialog();
+		final SWTBotView view = openMavenViewViaDialog();
 
-		final IProject project = createMavenProject(new MavenGav());
+		final IProject project = createMavenProjectViaDialog(new MavenGav());
 
 		view.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
 

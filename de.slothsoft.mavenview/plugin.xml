@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
-<fragment>
+<plugin>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
@@ -110,4 +110,11 @@
             name="%view.maven">
       </view>
    </extension>
-</fragment>
+   
+   <extension point="org.eclipse.debug.ui.consoleLineTrackers">
+      <consoleLineTracker id="org.eclipse.m2e.console.MavenConsoleLineTracker"
+            class="de.slothsoft.mavenview.internal.MavenConsoleLineTracker"
+            processType="java"/>
+   </extension>
+   
+</plugin>

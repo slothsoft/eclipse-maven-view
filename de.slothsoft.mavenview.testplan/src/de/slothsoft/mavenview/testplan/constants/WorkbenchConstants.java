@@ -18,4 +18,5 @@ public interface WorkbenchConstants {
 
 	String VIEW_PROJECT_EXPLORER = "Project Explorer";
 	String VIEW_PACKAGE_EXPLORER = "Package Explorer";
+	String VIEW_CONSOLE_ID = "org.eclipse.ui.console.ConsoleView"; //$NON-NLS-1$
 }

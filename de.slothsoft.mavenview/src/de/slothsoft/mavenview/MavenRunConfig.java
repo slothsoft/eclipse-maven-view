@@ -10,8 +10,12 @@ public class MavenRunConfig {
 
 	public String toGoalString() {
 		final StringBuilder sb = new StringBuilder();
-		sb.append(Arrays.stream(this.phases).sorted().map(Phase::getDisplayName).collect(Collectors.joining(" ")));
+		sb.append(getPhasesAsString());
 		return sb.toString();
+	}
+
+	public String getPhasesAsString() {
+		return Arrays.stream(this.phases).sorted().map(Phase::getDisplayName).collect(Collectors.joining(" "));
 	}
 
 	public Phase[] getPhases() {

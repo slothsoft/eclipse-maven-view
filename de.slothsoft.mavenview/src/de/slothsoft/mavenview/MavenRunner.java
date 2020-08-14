@@ -40,15 +40,15 @@ public class MavenRunner {
 
 	// Constants from org.eclipse.m2e.actions.MavenLaunchConstants
 	private final static String LAUNCH_CONFIGURATION_TYPE_ID = "org.eclipse.m2e.Maven2LaunchConfigurationType"; //$NON-NLS-1$
-	private final static String ATTR_POM_DIR = IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY;
 	private final static String ATTR_GOALS = "M2_GOALS"; //$NON-NLS-1$
 	private final static String ATTR_PROFILES = "M2_PROFILES"; //$NON-NLS-1$
+	public final static String ATTR_WORKING_DIRECTORY = IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY;
 
 	// Constants from org.eclipse.m2e.core.internalIMavenConstants
 	private final static String POM_FILE_NAME = "pom.xml"; //$NON-NLS-1$
 
 	// Misc constants
-	private final static String ATTR_CONFIG = "de.slothsoft.mavenview.config"; //$NON-NLS-1$
+	public final static String ATTR_CONFIG = "de.slothsoft.mavenview.config"; //$NON-NLS-1$
 
 	private final String mode = "run";
 
@@ -57,8 +57,8 @@ public class MavenRunner {
 
 	public MavenRunner() {
 		this.launchManager = DebugPlugin.getDefault().getLaunchManager();
-		this.launchConfigurationType = this.launchManager
-				.getLaunchConfigurationType(MavenRunner.LAUNCH_CONFIGURATION_TYPE_ID);
+		this.launchConfigurationType = Objects.requireNonNull(
+				this.launchManager.getLaunchConfigurationType(MavenRunner.LAUNCH_CONFIGURATION_TYPE_ID));
 	}
 
 	public void runForProject(IProject project, MavenRunConfig config) throws MavenRunnerException {
@@ -110,11 +110,12 @@ public class MavenRunner {
 
 		final ILaunchConfigurationWorkingCopy workingCopy = this.launchConfigurationType.newInstance(null,
 				safeConfigName);
-		workingCopy.setAttribute(MavenRunner.ATTR_POM_DIR, basedir.getLocation().toOSString());
+		workingCopy.setAttribute(ATTR_WORKING_DIRECTORY, basedir.getLocation().toOSString());
 		workingCopy.setAttribute(MavenRunner.ATTR_GOALS, goals);
 		workingCopy.setAttribute(IDebugUIConstants.ATTR_PRIVATE, true);
 		workingCopy.setAttribute(RefreshTab.ATTR_REFRESH_SCOPE, "${project}"); //$NON-NLS-1$
 		workingCopy.setAttribute(RefreshTab.ATTR_REFRESH_RECURSIVE, true);
+		workingCopy.setAttribute(ATTR_CONFIG, config);
 
 		setProjectConfiguration(workingCopy, basedir);
 

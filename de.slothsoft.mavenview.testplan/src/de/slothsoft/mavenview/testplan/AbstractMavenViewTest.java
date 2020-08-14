@@ -14,12 +14,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.junit.After;
 import org.junit.Assert;
@@ -81,15 +83,15 @@ public abstract class AbstractMavenViewTest {
 
 	// general code snippets
 
-	protected SWTBotView openMavenViewWithShowViewDialog() {
+	protected SWTBotView openMavenViewViaDialog() {
 		addToTearDown(this::clearShowViewDialog); // just in case
 
-		final SWTBotView result = openView(MavenViewConstants.VIEW_GROUP, MavenViewConstants.VIEW_TITLE);
+		final SWTBotView result = openViewViaDialog(MavenViewConstants.VIEW_GROUP, MavenViewConstants.VIEW_TITLE);
 		addToTearDown(result::close);
 		return result;
 	}
 
-	protected SWTBotView openView(String viewGroup, String viewTitle) {
+	protected SWTBotView openViewViaDialog(String viewGroup, String viewTitle) {
 		this.bot.menu(WorkbenchConstants.MENU_WINDOW).menu(WorkbenchConstants.SUB_MENU_SHOW_VIEW)
 				.menu(WorkbenchConstants.COMMAND_OTHER).click();
 
@@ -113,7 +115,7 @@ public abstract class AbstractMavenViewTest {
 		}
 	}
 
-	protected IProject createMavenProject(MavenGav gav) {
+	protected IProject createMavenProjectViaDialog(MavenGav gav) {
 		addToTearDown(this::clearNewProjectDialog); // just in case
 
 		this.bot.menu(WorkbenchConstants.MENU_FILE).menu(WorkbenchConstants.SUB_MENU_NEW)
@@ -150,10 +152,10 @@ public abstract class AbstractMavenViewTest {
 		return project;
 	}
 
-	protected IProject[] createMavenProjectWithModules(MavenGav gav, String... modules) {
+	protected IProject[] createMavenProjectWithModulesViaDialog(MavenGav gav, String... modules) {
 		final List<IProject> result = new ArrayList<>();
 
-		final IProject parentProject = createMavenProject(gav.type("pom"));
+		final IProject parentProject = createMavenProjectViaDialog(gav.type("pom"));
 		result.add(parentProject);
 
 		final SWTBotView projectExplorer = getProjectExplorerView();
@@ -190,19 +192,38 @@ public abstract class AbstractMavenViewTest {
 	private void addProjectDeletionToTearDown(final IProject project) {
 		addToTearDown(() -> {
 			try {
-				project.delete(true, null);
+				project.delete(false, false, null);
 			} catch (final CoreException e) {
-				e.printStackTrace(); // ignore
+				System.err.println(e.getMessage()); // ignore
 			}
 		});
+	}
+
+	protected SWTBotView openConsoleView() {
+		return openViewProgrammatically(WorkbenchConstants.VIEW_CONSOLE_ID);
 	}
 
 	protected SWTBotView getProjectExplorerView() {
 		try {
 			return this.bot.viewByTitle(PROJECT_VIEW);
 		} catch (final TimeoutException ignoredException) {
-			return openView(WorkbenchConstants.GROUP_GENERAL, PROJECT_VIEW);
+			return openViewViaDialog(WorkbenchConstants.GROUP_GENERAL, PROJECT_VIEW);
 		}
+	}
+
+	protected SWTBotView openViewProgrammatically(String viewId) {
+		final IViewReference[] view = {null};
+		Display.getDefault().syncExec(() -> {
+			try {
+				final IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				activePage.showView(viewId);
+				view[0] = activePage.findViewReference(viewId);
+			} catch (final PartInitException e) {
+				Assert.fail(e.getMessage());
+			}
+		});
+		Assert.assertNotNull("Could not open view " + viewId);
+		return new SWTBotView(view[0], this.bot);
 	}
 
 	private void clearNewProjectDialog() {
@@ -213,11 +234,15 @@ public abstract class AbstractMavenViewTest {
 	}
 
 	private void clearDiscoverM2ConnectorsDialogIfNecessary() {
+		final long originalTimeout = SWTBotPreferences.TIMEOUT;
+		SWTBotPreferences.TIMEOUT = 2000;
 		try {
 			this.bot.waitUntil(Conditions.shellIsActive(NewProjectConstants.MAVEN_DISCOVER_M2E_CONNECTORS));
 			clearDiscoverM2ConnectorsDialog();
 		} catch (final TimeoutException ignoredException) {
 			// ignore
+		} finally {
+			SWTBotPreferences.TIMEOUT = originalTimeout;
 		}
 	}
 

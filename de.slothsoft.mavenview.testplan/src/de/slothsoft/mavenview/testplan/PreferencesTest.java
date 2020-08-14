@@ -6,6 +6,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
@@ -14,10 +15,13 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTableItem;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.slothsoft.mavenview.MavenViewPlugin;
 import de.slothsoft.mavenview.MavenViewPreferences;
 import de.slothsoft.mavenview.Phase;
 import de.slothsoft.mavenview.testplan.constants.CommonConstants;
@@ -26,10 +30,18 @@ import de.slothsoft.mavenview.testplan.constants.PreferencesConstants;
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class PreferencesTest extends AbstractMavenViewTest {
 
+	@Before
+	@After
+	public void clearPreferences() {
+		final IPreferenceStore preferences = MavenViewPlugin.getDefault().getPreferenceStore();
+		preferences.setToDefault(MavenViewPreferences.DISPLAYED_PHASES);
+		preferences.setToDefault(MavenViewPreferences.INITIAL_PROJECT_SELECTION);
+	}
+
 	@Test
 	public void testP01A_InitialProjectSelectionAll() throws Exception {
 
-		final IProject[] projects = createMavenProjectWithModules(new MavenGav(), UUID.randomUUID().toString());
+		final IProject[] projects = createMavenProjectWithModulesViaDialog(new MavenGav(), UUID.randomUUID().toString());
 
 		final SWTBotShell preferenceShell = openPreferences();
 
@@ -38,7 +50,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 
 		preferenceShell.bot().button(PreferencesConstants.BUTTON_APPLY_AND_CLOSE).click();
 
-		final SWTBotView view = openMavenViewWithShowViewDialog();
+		final SWTBotView view = openMavenViewViaDialog();
 		final SWTBotTree viewTree = view.bot().tree();
 
 		Assert.assertEquals(2, viewTree.getAllItems().length);
@@ -49,9 +61,9 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	@Test
 	public void testP01B_InitialProjectSelectionRoot() throws Exception {
 
-		final IProject[] projects = createMavenProjectWithModules(new MavenGav(), UUID.randomUUID().toString());
+		final IProject[] projects = createMavenProjectWithModulesViaDialog(new MavenGav(), UUID.randomUUID().toString());
 
-		final SWTBotView view = openMavenViewWithShowViewDialog();
+		final SWTBotView view = openMavenViewViaDialog();
 		final SWTBotTree viewTree = view.bot().tree();
 
 		final SWTBotShell preferenceShell = openPreferences();
@@ -69,7 +81,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	@Test
 	public void testP02A_DisplayedPhases1() throws Exception {
 
-		final IProject project = createMavenProject(new MavenGav());
+		final IProject project = createMavenProjectViaDialog(new MavenGav());
 
 		final SWTBotShell preferenceShell = openPreferences();
 
@@ -78,7 +90,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 
 		preferenceShell.bot().button(PreferencesConstants.BUTTON_APPLY_AND_CLOSE).click();
 
-		final SWTBotView view = openMavenViewWithShowViewDialog();
+		final SWTBotView view = openMavenViewViaDialog();
 		final SWTBotTree viewTree = view.bot().tree();
 
 		Assert.assertEquals(1, viewTree.getAllItems().length);
@@ -108,9 +120,9 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	@Test
 	public void testP02B_DisplayedPhases1() throws Exception {
 
-		final IProject project = createMavenProject(new MavenGav());
+		final IProject project = createMavenProjectViaDialog(new MavenGav());
 
-		final SWTBotView view = openMavenViewWithShowViewDialog();
+		final SWTBotView view = openMavenViewViaDialog();
 		final SWTBotTree viewTree = view.bot().tree();
 
 		final SWTBotShell preferenceShell = openPreferences();
@@ -133,9 +145,9 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	@Test
 	public void testP09_PreferencesDefault() throws Exception {
 
-		final IProject[] projects = createMavenProjectWithModules(new MavenGav(), UUID.randomUUID().toString());
+		final IProject[] projects = createMavenProjectWithModulesViaDialog(new MavenGav(), UUID.randomUUID().toString());
 
-		final SWTBotView view = openMavenViewWithShowViewDialog();
+		final SWTBotView view = openMavenViewViaDialog();
 		final SWTBotTree viewTree = view.bot().tree();
 
 		final SWTBotShell preferenceShell = openPreferences();

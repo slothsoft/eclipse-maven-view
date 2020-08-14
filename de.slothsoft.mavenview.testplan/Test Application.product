@@ -59,6 +59,7 @@
       <plugin id="org.eclipse.core.databinding.observable"/>
       <plugin id="org.eclipse.core.databinding.property"/>
       <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.externaltools"/>
       <plugin id="org.eclipse.core.filebuffers"/>
       <plugin id="org.eclipse.core.filesystem"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
@@ -124,6 +125,7 @@
       <plugin id="org.eclipse.jdt.core"/>
       <plugin id="org.eclipse.jdt.core.manipulation"/>
       <plugin id="org.eclipse.jdt.debug"/>
+      <plugin id="org.eclipse.jdt.debug.ui"/>
       <plugin id="org.eclipse.jdt.launching"/>
       <plugin id="org.eclipse.jdt.ui"/>
       <plugin id="org.eclipse.jem.util"/>
@@ -141,6 +143,7 @@
       <plugin id="org.eclipse.m2e.archetype.common"/>
       <plugin id="org.eclipse.m2e.core"/>
       <plugin id="org.eclipse.m2e.core.ui"/>
+      <plugin id="org.eclipse.m2e.launching"/>
       <plugin id="org.eclipse.m2e.maven.indexer"/>
       <plugin id="org.eclipse.m2e.maven.runtime"/>
       <plugin id="org.eclipse.m2e.maven.runtime.slf4j.simple"/>
@@ -159,6 +162,7 @@
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.console"/>
       <plugin id="org.eclipse.ui.editors"/>
+      <plugin id="org.eclipse.ui.externaltools"/>
       <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.genericeditor"/>
       <plugin id="org.eclipse.ui.ide"/>
