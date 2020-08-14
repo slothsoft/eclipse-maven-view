@@ -1,16 +1,22 @@
 package de.slothsoft.mavenview.testplan;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotWorkbenchPart;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotStyledText;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarDropDownButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,26 +32,70 @@ public class MavenTest extends AbstractMavenViewTest {
 
 	private IProject project1;
 	private IProject project2;
-	private SWTBotView view;
+	private SWTBotView consoleView;
+	private SWTBotView mavenView;
 
 	@Before
 	public void setUp() {
+		this.consoleView = openConsoleView();
+		terminateAllLaunches();
+
 		this.project1 = createMavenProjectViaDialog(new MavenGav());
 		this.project2 = createMavenProjectViaDialog(new MavenGav());
-		this.view = openMavenViewViaDialog();
+		this.mavenView = openMavenViewViaDialog();
+	}
+
+	@After
+	public void tearDown() {
+		terminateAllLaunches();
+	}
+
+	private void terminateAllLaunches() {
+		this.consoleView.show();
+
+		boolean wasLaunchRemoved = false;
+		do {
+			wasLaunchRemoved = false;
+
+			final SWTBotToolbarButton terminateButton = enabledToolbarButton(this.consoleView,
+					MavenViewConstants.COMMAND_TERMINATE);
+			if (terminateButton != null) {
+				terminateButton.click();
+			}
+
+			final SWTBotToolbarButton removeAllLaunchesButton = enabledToolbarButton(this.consoleView,
+					MavenViewConstants.COMMAND_REMOVE_ALL_LAUNCHES);
+			if (removeAllLaunchesButton != null) {
+				removeAllLaunchesButton.click();
+				wasLaunchRemoved = true;
+			}
+
+		} while (wasLaunchRemoved); // try to see if there is another launch
+	}
+
+	private static SWTBotToolbarButton enabledToolbarButton(SWTBotWorkbenchPart<?> part, String tooltip)
+			throws WidgetNotFoundException {
+		final List<SWTBotToolbarButton> l = part.getToolbarButtons();
+
+		for (int i = 0; i < l.size(); i++) {
+			final SWTBotToolbarButton item = l.get(i);
+			if (item.getToolTipText().equals(tooltip)) return item.isEnabled() ? item : null;
+		}
+
+		return null;
 	}
 
 	@Test
 	public void testM01_RunMavenBuild() throws Exception {
-		final SWTBotTree mavenProjectTree = this.view.bot().tree();
+		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
 		mavenProjectTree.getTreeItem(this.project1.getName()).expand();
 		mavenProjectTree.getTreeItem(this.project1.getName()).getNode(Phase.CLEAN.getDisplayName()).select();
 
-		this.view.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
+		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
 
-		final SWTBotView consoleView = openConsoleView();
-		final String consoleText = waitForSeparators(consoleView.bot().styledText(), 2);
+		this.consoleView.show();
+		final String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
 
 		Assert.assertTrue("Missing working directory for project " + this.project1.getName() + ": " + consoleText,
 				consoleText.matches("(?s)(.*)Working Directory: (.*)" + this.project1.getName() + "(.*)"));
@@ -72,7 +122,7 @@ public class MavenTest extends AbstractMavenViewTest {
 
 	@Test
 	public void testM02_RunMavenBuildWithMultiplePhases() throws Exception {
-		final SWTBotTree mavenProjectTree = this.view.bot().tree();
+		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
 		mavenProjectTree.getTreeItem(this.project1.getName()).expand();
 
@@ -82,17 +132,17 @@ public class MavenTest extends AbstractMavenViewTest {
 				.getNode(Phase.TEST.getDisplayName());
 		mavenProjectTree.select(installItem, testItem);
 
-		this.view.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
+		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
 
-		final SWTBotView consoleView = openConsoleView();
-		final String consoleText = waitForSeparators(consoleView.bot().styledText(), 2);
+		this.consoleView.show();
+		final String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
 
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.contains("Phases: test install"));
 	}
 
 	@Test
 	public void testM03_RunMavenBuildWithMultipleProjects() throws Exception {
-		final SWTBotTree mavenProjectTree = this.view.bot().tree();
+		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
 		mavenProjectTree.getTreeItem(this.project1.getName()).expand();
 		mavenProjectTree.getTreeItem(this.project2.getName()).expand();
@@ -103,15 +153,15 @@ public class MavenTest extends AbstractMavenViewTest {
 				.getNode(Phase.VERIFY.getDisplayName());
 		mavenProjectTree.select(compileItem, verifyItem);
 
-		this.view.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
+		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
 
-		final SWTBotView consoleView = openConsoleView();
-		String consoleText = waitForSeparators(consoleView.bot().styledText(), 2);
+		this.consoleView.show();
+		String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
 
 		final String phasePattern = "(?s)(.*)Phases: (verify|compile)(.*)";
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.matches(phasePattern));
 
-		final SWTBotToolbarDropDownButton button = consoleView
+		final SWTBotToolbarDropDownButton button = this.consoleView
 				.toolbarDropDownButton(MavenViewConstants.COMMAND_DISPLAY_SELECTED_CONSOLE);
 
 		button.menuItem(new BaseMatcher<MenuItem>() {
@@ -127,7 +177,7 @@ public class MavenTest extends AbstractMavenViewTest {
 			}
 		}).click();
 
-		consoleText = waitForSeparators(consoleView.bot().styledText(), 2);
+		consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.matches(phasePattern));
 	}
 
