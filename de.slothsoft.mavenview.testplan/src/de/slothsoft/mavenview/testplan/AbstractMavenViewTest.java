@@ -9,7 +9,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
+import org.eclipse.swtbot.swt.finder.results.VoidResult;
+import org.eclipse.ui.PlatformUI;
 import org.junit.After;
+import org.junit.Before;
 
 import de.slothsoft.mavenview.testplan.constants.CommonConstants;
 import de.slothsoft.mavenview.testplan.constants.MavenViewConstants;
@@ -23,6 +27,17 @@ public abstract class AbstractMavenViewTest {
 
 	protected final SWTWorkbenchBot bot = new SWTWorkbenchBot();
 	private final List<Runnable> tearDowns = new ArrayList<>();
+
+	@Before
+	public void setUpShell() {
+		UIThreadRunnable.syncExec(new VoidResult() {
+
+			@Override
+			public void run() {
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().forceActive();
+			}
+		});
+	}
 
 	@After
 	public final void tearDownRunnables() {

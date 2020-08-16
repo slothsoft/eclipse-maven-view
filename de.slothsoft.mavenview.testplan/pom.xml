@@ -22,6 +22,7 @@
 					<useUIThread>false</useUIThread>
 					<application>org.eclipse.ui.ide.workbench</application>
 					<appArgLine>-nl en -swtBot</appArgLine>
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
 				</configuration>
 			</plugin>
 		</plugins>
