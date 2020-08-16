@@ -95,15 +95,14 @@ public class MavenTest extends AbstractMavenViewTest {
 	public void testM01_RunMavenBuild() throws Exception {
 		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
-		this.mavenView.show();
-		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_REFRESH);
 
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
 		mavenProjectTree.getTreeItem(project.getName()).expand();
 		mavenProjectTree.getTreeItem(project.getName()).getNode(Phase.CLEAN.getDisplayName()).select();
 
-		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
+		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_RUN_MAVEN_BUILD);
 
 		this.consoleView.show();
 		final String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
@@ -135,8 +134,7 @@ public class MavenTest extends AbstractMavenViewTest {
 	public void testM02_RunMavenBuildWithMultiplePhases() throws Exception {
 		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
-		this.mavenView.show();
-		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_REFRESH);
 
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
@@ -148,7 +146,7 @@ public class MavenTest extends AbstractMavenViewTest {
 				.getNode(Phase.TEST.getDisplayName());
 		mavenProjectTree.select(installItem, testItem);
 
-		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
+		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_RUN_MAVEN_BUILD);
 
 		this.consoleView.show();
 		final String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
@@ -161,8 +159,7 @@ public class MavenTest extends AbstractMavenViewTest {
 		final IProject project1 = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 		final IProject project2 = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
-		this.mavenView.show();
-		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_REFRESH);
 
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
@@ -175,7 +172,7 @@ public class MavenTest extends AbstractMavenViewTest {
 				.getNode(Phase.VERIFY.getDisplayName());
 		mavenProjectTree.select(compileItem, verifyItem);
 
-		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
+		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_RUN_MAVEN_BUILD);
 
 		this.consoleView.show();
 		String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
@@ -211,15 +208,14 @@ public class MavenTest extends AbstractMavenViewTest {
 		this.projectFactory.createMavenLaunchConfig(project, mavenLaunchConfigName,
 				new MavenRunConfig().phases(Phase.CLEAN));
 
-		this.mavenView.show();
-		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_REFRESH);
 
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
 		mavenProjectTree.getTreeItem(project.getName()).expand();
 		mavenProjectTree.getTreeItem(project.getName()).getNode(mavenLaunchConfigName).select();
 
-		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
+		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_RUN_MAVEN_BUILD);
 
 		this.consoleView.show();
 		final String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 1);

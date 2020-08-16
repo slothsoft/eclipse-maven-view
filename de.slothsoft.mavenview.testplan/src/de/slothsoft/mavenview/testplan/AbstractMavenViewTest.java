@@ -9,10 +9,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotWorkbenchPart;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.eclipse.swtbot.swt.finder.results.VoidResult;
 import org.eclipse.ui.PlatformUI;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 
 import de.slothsoft.mavenview.testplan.constants.CommonConstants;
@@ -50,6 +52,12 @@ public abstract class AbstractMavenViewTest {
 	}
 
 	// general code snippets
+
+	protected void clickToolbarButton(SWTBotWorkbenchPart part, String commandTooltip) {
+		part.show();
+		Assert.assertTrue("Part should be active!", part.isActive());
+		part.toolbarButton(commandTooltip).click();
+	}
 
 	protected SWTBotView openMavenViewViaDialog() {
 		final SWTBotView result = WorkbenchView.openViewViaDialog(this.bot, MavenViewConstants.VIEW_GROUP,

@@ -3,9 +3,7 @@ package de.slothsoft.mavenview.testplan.data;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
-import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -53,11 +51,13 @@ public enum WorkbenchView {
 	}
 
 	public static SWTBotView getOrOpenViewViaDialog(SWTWorkbenchBot bot, String viewGroup, String viewTitle) {
-		try {
-			return bot.viewByTitle(viewTitle);
-		} catch (final TimeoutException | WidgetNotFoundException ignoredException) {
-			return openViewViaDialog(bot, viewGroup, viewTitle);
+		for (final SWTBotView view : bot.views()) {
+			if (view.getTitle().equals(viewTitle)) {
+				view.show();
+				return view;
+			}
 		}
+		return openViewViaDialog(bot, viewGroup, viewTitle);
 	}
 
 	public static SWTBotView openViewViaDialog(SWTWorkbenchBot bot, String viewGroup, String viewTitle) {

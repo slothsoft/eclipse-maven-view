@@ -35,9 +35,7 @@ public class RefreshTest extends AbstractMavenViewTest {
 
 		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
-		view.show();
-		Assert.assertTrue("View should be actived!", view.isActive());
-		view.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+		clickToolbarButton(view, MavenViewConstants.COMMAND_REFRESH);
 
 		final SWTBotTree mavenProjectTree = view.bot().tree();
 		Assert.assertEquals(1, mavenProjectTree.getAllItems().length);
@@ -53,8 +51,7 @@ public class RefreshTest extends AbstractMavenViewTest {
 		this.projectFactory.createMavenLaunchConfig(project, mavenLaunchConfigName,
 				new MavenRunConfig().phases(Phase.CLEAN, Phase.INSTALL));
 
-		view.show();
-		view.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+		clickToolbarButton(view, MavenViewConstants.COMMAND_REFRESH);
 
 		final SWTBotTree mavenProjectTree = view.bot().tree();
 		Assert.assertEquals(1, mavenProjectTree.getAllItems().length);
