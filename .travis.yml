@@ -21,5 +21,5 @@ script:
  
 # export the IT log file
 after_failure:
-  - if [ -f /home/travis/build/slothsoft/eclipse-maven-view/de.slothsoft.mavenview.it/target/surefire-reports/*.txt ]; then lynx -dump /home/travis/build/slothsoft/eclipse-maven-view/de.slothsoft.mavenview.it/target/surefire-reports/*.txt; fi
-  - if [ -f /home/travis/build/slothsoft/eclipse-maven-view/de.slothsoft.mavenview.testplan/target/surefire-reports/*.txt ]; then lynx -dump /home/travis/build/slothsoft/eclipse-maven-view/de.slothsoft.mavenview.testplan/target/surefire-reports/*.txt; fi
+  - cat /home/travis/build/slothsoft/eclipse-maven-view/de.slothsoft.mavenview.it/target/surefire-reports/*.txt
+  - cat /home/travis/build/slothsoft/eclipse-maven-view/de.slothsoft.mavenview.testplan/target/surefire-reports/*.txt
