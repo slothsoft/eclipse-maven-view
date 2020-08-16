@@ -16,7 +16,7 @@ public class RefreshHandler extends AbstractHandler {
 		if (activePart instanceof MavenView) {
 			((MavenView) activePart).refresh();
 		}
-		return null;
+		throw new IllegalArgumentException("Cannot refresh view " + activePart + "!");
 	}
 
 }
