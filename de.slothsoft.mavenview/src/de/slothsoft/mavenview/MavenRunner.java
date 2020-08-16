@@ -39,7 +39,7 @@ import org.eclipse.m2e.core.project.ResolverConfiguration;
 public class MavenRunner {
 
 	// Constants from org.eclipse.m2e.actions.MavenLaunchConstants
-	private final static String LAUNCH_CONFIGURATION_TYPE_ID = "org.eclipse.m2e.Maven2LaunchConfigurationType"; //$NON-NLS-1$
+	public final static String LAUNCH_CONFIGURATION_TYPE_ID = "org.eclipse.m2e.Maven2LaunchConfigurationType"; //$NON-NLS-1$
 	private final static String ATTR_GOALS = "M2_GOALS"; //$NON-NLS-1$
 	private final static String ATTR_PROFILES = "M2_PROFILES"; //$NON-NLS-1$
 	public final static String ATTR_WORKING_DIRECTORY = IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY;

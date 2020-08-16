@@ -12,6 +12,7 @@ public interface CommonConstants {
 	String BUTTON_FINISH = "&Finish";
 	String BUTTON_APPLY = "Apply";
 	String BUTTON_OPEN = "Open";
+	String BUTTON_CLOSE = "Close";
 
 	String DATA_ID = "id";
 }

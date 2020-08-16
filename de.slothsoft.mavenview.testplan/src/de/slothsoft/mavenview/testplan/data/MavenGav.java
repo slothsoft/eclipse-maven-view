@@ -1,4 +1,4 @@
-package de.slothsoft.mavenview.testplan;
+package de.slothsoft.mavenview.testplan.data;
 
 import java.util.Objects;
 import java.util.UUID;

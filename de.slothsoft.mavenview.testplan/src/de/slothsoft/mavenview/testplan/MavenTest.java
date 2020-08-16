@@ -1,6 +1,7 @@
 package de.slothsoft.mavenview.testplan;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.MenuItem;
@@ -22,26 +23,31 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.slothsoft.mavenview.MavenRunConfig;
 import de.slothsoft.mavenview.Phase;
 import de.slothsoft.mavenview.testplan.constants.MavenViewConstants;
+import de.slothsoft.mavenview.testplan.data.MavenGav;
+import de.slothsoft.mavenview.testplan.data.ProjectFactory;
+import de.slothsoft.mavenview.testplan.data.WorkbenchView;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class MavenTest extends AbstractMavenViewTest {
 
 	private static final String SEPARATOR = "(?s)------------------------------------------------------------------------";
 
-	private IProject project1;
-	private IProject project2;
+	private ProjectFactory projectFactory;
+
 	private SWTBotView consoleView;
 	private SWTBotView mavenView;
 
 	@Before
 	public void setUp() {
-		this.consoleView = openConsoleView();
+		this.projectFactory = new ProjectFactory(this.bot);
+		addToTearDown(this.projectFactory::dispose);
+
+		this.consoleView = WorkbenchView.CONSOLE.open(this.bot);
 		terminateAllLaunches();
 
-		this.project1 = createMavenProjectViaDialog(new MavenGav());
-		this.project2 = createMavenProjectViaDialog(new MavenGav());
 		this.mavenView = openMavenViewViaDialog();
 	}
 
@@ -87,18 +93,23 @@ public class MavenTest extends AbstractMavenViewTest {
 
 	@Test
 	public void testM01_RunMavenBuild() throws Exception {
+		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
+
+		this.mavenView.show();
+		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
-		mavenProjectTree.getTreeItem(this.project1.getName()).expand();
-		mavenProjectTree.getTreeItem(this.project1.getName()).getNode(Phase.CLEAN.getDisplayName()).select();
+		mavenProjectTree.getTreeItem(project.getName()).expand();
+		mavenProjectTree.getTreeItem(project.getName()).getNode(Phase.CLEAN.getDisplayName()).select();
 
 		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
 
 		this.consoleView.show();
 		final String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
 
-		Assert.assertTrue("Missing working directory for project " + this.project1.getName() + ": " + consoleText,
-				consoleText.matches("(?s)(.*)Working Directory: (.*)" + this.project1.getName() + "(.*)"));
+		Assert.assertTrue("Missing working directory for project " + project.getName() + ": " + consoleText,
+				consoleText.matches("(?s)(.*)Working Directory: (.*)" + project.getName() + "(.*)"));
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.contains("Phases: clean"));
 	}
 
@@ -122,13 +133,18 @@ public class MavenTest extends AbstractMavenViewTest {
 
 	@Test
 	public void testM02_RunMavenBuildWithMultiplePhases() throws Exception {
+		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
+
+		this.mavenView.show();
+		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
-		mavenProjectTree.getTreeItem(this.project1.getName()).expand();
+		mavenProjectTree.getTreeItem(project.getName()).expand();
 
-		final SWTBotTreeItem installItem = mavenProjectTree.getTreeItem(this.project1.getName())
+		final SWTBotTreeItem installItem = mavenProjectTree.getTreeItem(project.getName())
 				.getNode(Phase.INSTALL.getDisplayName());
-		final SWTBotTreeItem testItem = mavenProjectTree.getTreeItem(this.project1.getName())
+		final SWTBotTreeItem testItem = mavenProjectTree.getTreeItem(project.getName())
 				.getNode(Phase.TEST.getDisplayName());
 		mavenProjectTree.select(installItem, testItem);
 
@@ -142,14 +158,20 @@ public class MavenTest extends AbstractMavenViewTest {
 
 	@Test
 	public void testM03_RunMavenBuildWithMultipleProjects() throws Exception {
+		final IProject project1 = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
+		final IProject project2 = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
+
+		this.mavenView.show();
+		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 
-		mavenProjectTree.getTreeItem(this.project1.getName()).expand();
-		mavenProjectTree.getTreeItem(this.project2.getName()).expand();
+		mavenProjectTree.getTreeItem(project1.getName()).expand();
+		mavenProjectTree.getTreeItem(project2.getName()).expand();
 
-		final SWTBotTreeItem compileItem = mavenProjectTree.getTreeItem(this.project1.getName())
+		final SWTBotTreeItem compileItem = mavenProjectTree.getTreeItem(project1.getName())
 				.getNode(Phase.COMPILE.getDisplayName());
-		final SWTBotTreeItem verifyItem = mavenProjectTree.getTreeItem(this.project2.getName())
+		final SWTBotTreeItem verifyItem = mavenProjectTree.getTreeItem(project2.getName())
 				.getNode(Phase.VERIFY.getDisplayName());
 		mavenProjectTree.select(compileItem, verifyItem);
 
@@ -179,6 +201,31 @@ public class MavenTest extends AbstractMavenViewTest {
 
 		consoleText = waitForSeparators(this.consoleView.bot().styledText(), 2);
 		Assert.assertTrue("Missing phases: " + consoleText, consoleText.matches(phasePattern));
+	}
+
+	@Test
+	public void testM04_RunMavenBuildForMavenLaunchConfig() throws Exception {
+		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
+
+		final String mavenLaunchConfigName = UUID.randomUUID().toString();
+		this.projectFactory.createMavenLaunchConfig(project, mavenLaunchConfigName,
+				new MavenRunConfig().phases(Phase.CLEAN));
+
+		this.mavenView.show();
+		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
+
+		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
+
+		mavenProjectTree.getTreeItem(project.getName()).expand();
+		mavenProjectTree.getTreeItem(project.getName()).getNode(mavenLaunchConfigName).select();
+
+		this.mavenView.toolbarButton(MavenViewConstants.COMMAND_RUN_MAVEN_BUILD).click();
+
+		this.consoleView.show();
+		final String consoleText = waitForSeparators(this.consoleView.bot().styledText(), 1);
+
+		Assert.assertTrue("Missing Maven's first line: " + consoleText,
+				consoleText.startsWith("[INFO] Scanning for projects..."));
 	}
 
 }

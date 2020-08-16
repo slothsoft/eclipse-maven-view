@@ -10,6 +10,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -20,6 +21,7 @@ import de.slothsoft.mavenview.MavenRunConfig;
 import de.slothsoft.mavenview.MavenRunner;
 import de.slothsoft.mavenview.MavenRunnerException;
 import de.slothsoft.mavenview.Phase;
+import de.slothsoft.mavenview.internal.tree.LaunchConfigNode;
 import de.slothsoft.mavenview.internal.tree.PhaseNode;
 
 public class RunMavenPhasesHandler extends AbstractHandler {
@@ -32,12 +34,18 @@ public class RunMavenPhasesHandler extends AbstractHandler {
 				? Arrays.stream(((IStructuredSelection) selection).toArray()).filter(s -> s instanceof PhaseNode)
 						.map(s -> (PhaseNode) s).toArray(PhaseNode[]::new)
 				: new PhaseNode[0];
+		final LaunchConfigNode[] selectedLaunchConfigNodes = selection instanceof IStructuredSelection
+				? Arrays.stream(((IStructuredSelection) selection).toArray()).filter(s -> s instanceof LaunchConfigNode)
+						.map(s -> (LaunchConfigNode) s).toArray(LaunchConfigNode[]::new)
+				: new LaunchConfigNode[0];
 
-		if (selectedPhaseNodes.length == 0) {
-			MessageDialog.openError(HandlerUtil.getActiveShell(event), Messages.getString("SelectPhasesTitle"),
+		final Shell activeShell = HandlerUtil.getActiveShell(event);
+		if (selectedPhaseNodes.length == 0 && selectedLaunchConfigNodes.length == 0) {
+			MessageDialog.openError(activeShell, Messages.getString("SelectPhasesTitle"),
 					Messages.getString("SelectPhases"));
 		} else {
-			runMavenPhases(HandlerUtil.getActiveShell(event), selectedPhaseNodes);
+			runMavenPhases(activeShell, selectedPhaseNodes);
+			runLaunchConfigs(selectedLaunchConfigNodes);
 		}
 		return null;
 	}
@@ -61,4 +69,9 @@ public class RunMavenPhasesHandler extends AbstractHandler {
 		}
 	}
 
+	private static void runLaunchConfigs(LaunchConfigNode[] launchConfigNodes) {
+		for (final LaunchConfigNode launchConfigNode : launchConfigNodes) {
+			DebugUITools.launch(launchConfigNode.getLaunchConfig(), "run");
+		}
+	}
 }

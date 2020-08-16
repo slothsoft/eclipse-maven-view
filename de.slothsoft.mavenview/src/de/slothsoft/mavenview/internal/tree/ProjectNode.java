@@ -1,20 +1,60 @@
 package de.slothsoft.mavenview.internal.tree;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import de.slothsoft.mavenview.Displayable;
+import de.slothsoft.mavenview.MavenRunner;
 
 public class ProjectNode implements Displayable, Parentable {
 
+	private static final String WORKING_DIR_PREFIX = "${project_loc:";
+	private static final String WORKING_DIR_SUFFIX = "}";
+
 	private final IProject project;
+
+	private final ILaunchConfiguration[] launchConfigs;
 
 	public ProjectNode(IProject project) {
 		this.project = Objects.requireNonNull(project);
+		this.launchConfigs = readLaunchConfigs(project);
+	}
+
+	private static ILaunchConfiguration[] readLaunchConfigs(IProject project) {
+		final ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+		final ILaunchConfigurationType launchConfigurationType = Objects
+				.requireNonNull(launchManager.getLaunchConfigurationType(MavenRunner.LAUNCH_CONFIGURATION_TYPE_ID));
+
+		try {
+			final ILaunchConfiguration[] launchConfigurations = launchManager
+					.getLaunchConfigurations(launchConfigurationType);
+			final String projectLocation = WORKING_DIR_PREFIX + project.getName() + WORKING_DIR_SUFFIX;
+			final List<ILaunchConfiguration> result = new ArrayList<>(launchConfigurations.length);
+
+			for (final ILaunchConfiguration configuration : launchConfigurations) {
+				final String workingDirectory = configuration.getAttribute(MavenRunner.ATTR_WORKING_DIRECTORY,
+						(String) null);
+				if (projectLocation.equals(workingDirectory)) {
+					result.add(configuration);
+				}
+			}
+			return result.toArray(new ILaunchConfiguration[result.size()]);
+		} catch (final CoreException e) {
+			// we can ignore that
+			System.err.println(e.getMessage());
+			return new ILaunchConfiguration[0];
+		}
 	}
 
 	@Override
@@ -34,6 +74,14 @@ public class ProjectNode implements Displayable, Parentable {
 
 	@Override
 	public Object[] getChildren() {
+		if (this.launchConfigs.length > 0) {
+			final Object[] children = new Object[this.launchConfigs.length + 1];
+			for (int i = 0; i < this.launchConfigs.length; i++) {
+				children[i] = new LaunchConfigNode(this.launchConfigs[i]);
+			}
+			children[children.length - 1] = new PhasesNode(this);
+			return children;
+		}
 		return PhaseNode.createDisplayed(this);
 	}
 

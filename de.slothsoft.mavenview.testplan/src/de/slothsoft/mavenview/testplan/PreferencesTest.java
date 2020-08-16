@@ -9,6 +9,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCombo;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
@@ -26,9 +27,20 @@ import de.slothsoft.mavenview.MavenViewPreferences;
 import de.slothsoft.mavenview.Phase;
 import de.slothsoft.mavenview.testplan.constants.CommonConstants;
 import de.slothsoft.mavenview.testplan.constants.PreferencesConstants;
+import de.slothsoft.mavenview.testplan.constants.WorkbenchConstants;
+import de.slothsoft.mavenview.testplan.data.MavenGav;
+import de.slothsoft.mavenview.testplan.data.ProjectFactory;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class PreferencesTest extends AbstractMavenViewTest {
+
+	private ProjectFactory projectFactory;
+
+	@Before
+	public void setUp() {
+		this.projectFactory = new ProjectFactory(this.bot);
+		addToTearDown(this.projectFactory::dispose);
+	}
 
 	@Before
 	@After
@@ -41,9 +53,10 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	@Test
 	public void testP01A_InitialProjectSelectionAll() throws Exception {
 
-		final IProject[] projects = createMavenProjectWithModulesViaDialog(new MavenGav(), UUID.randomUUID().toString());
+		final IProject[] projects = this.projectFactory.createMavenProjectWithModulesViaDialog(new MavenGav(),
+				UUID.randomUUID().toString());
 
-		final SWTBotShell preferenceShell = openPreferences();
+		final SWTBotShell preferenceShell = openPreferencesDialog();
 
 		final SWTBotCombo combo = preferenceShell.bot().comboBoxWithId(MavenViewPreferences.INITIAL_PROJECT_SELECTION);
 		combo.setSelection(PreferencesConstants.INITIAL_PROJECT_SELECTION_ALL);
@@ -58,15 +71,36 @@ public class PreferencesTest extends AbstractMavenViewTest {
 		viewTree.getTreeItem(projects[1].getName()).expand();
 	}
 
+	private SWTBotShell openPreferencesDialog() {
+		addToTearDown(this::clearPreferencesDialog);
+
+		this.bot.menu(WorkbenchConstants.MENU_WINDOW).menu(WorkbenchConstants.COMMAND_PREFERENCES).click();
+		this.bot.waitUntil(Conditions.shellIsActive(PreferencesConstants.TITLE));
+
+		this.bot.tree().getTreeItem(PreferencesConstants.PREFERENCES_MAVEN).expand();
+		this.bot.tree().getTreeItem(PreferencesConstants.PREFERENCES_MAVEN)
+				.getNode(PreferencesConstants.PREFERENCES_RUNS_VIEW).select();
+
+		return this.bot.activeShell();
+	}
+
+	private void clearPreferencesDialog() {
+		final SWTBotShell activeShell = this.bot.activeShell();
+		if (PreferencesConstants.TITLE.equals(activeShell.getText())) {
+			activeShell.close();
+		}
+	}
+
 	@Test
 	public void testP01B_InitialProjectSelectionRoot() throws Exception {
 
-		final IProject[] projects = createMavenProjectWithModulesViaDialog(new MavenGav(), UUID.randomUUID().toString());
+		final IProject[] projects = this.projectFactory.createMavenProjectWithModulesViaDialog(new MavenGav(),
+				UUID.randomUUID().toString());
 
 		final SWTBotView view = openMavenViewViaDialog();
 		final SWTBotTree viewTree = view.bot().tree();
 
-		final SWTBotShell preferenceShell = openPreferences();
+		final SWTBotShell preferenceShell = openPreferencesDialog();
 
 		final SWTBotCombo combo = preferenceShell.bot().comboBoxWithId(MavenViewPreferences.INITIAL_PROJECT_SELECTION);
 		combo.setSelection(PreferencesConstants.INITIAL_PROJECT_SELECTION_ROOT);
@@ -81,9 +115,9 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	@Test
 	public void testP02A_DisplayedPhases1() throws Exception {
 
-		final IProject project = createMavenProjectViaDialog(new MavenGav());
+		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
-		final SWTBotShell preferenceShell = openPreferences();
+		final SWTBotShell preferenceShell = openPreferencesDialog();
 
 		final SWTBotTable table = preferenceShell.bot().tableWithId(MavenViewPreferences.DISPLAYED_PHASES);
 		checkOnlyTableItems(table, "install");
@@ -120,12 +154,12 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	@Test
 	public void testP02B_DisplayedPhases1() throws Exception {
 
-		final IProject project = createMavenProjectViaDialog(new MavenGav());
+		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
 		final SWTBotView view = openMavenViewViaDialog();
 		final SWTBotTree viewTree = view.bot().tree();
 
-		final SWTBotShell preferenceShell = openPreferences();
+		final SWTBotShell preferenceShell = openPreferencesDialog();
 
 		final SWTBotTable table = preferenceShell.bot().tableWithId(MavenViewPreferences.DISPLAYED_PHASES);
 		checkOnlyTableItems(table, "site", "site-deploy");
@@ -145,12 +179,13 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	@Test
 	public void testP09_PreferencesDefault() throws Exception {
 
-		final IProject[] projects = createMavenProjectWithModulesViaDialog(new MavenGav(), UUID.randomUUID().toString());
+		final IProject[] projects = this.projectFactory.createMavenProjectWithModulesViaDialog(new MavenGav(),
+				UUID.randomUUID().toString());
 
 		final SWTBotView view = openMavenViewViaDialog();
 		final SWTBotTree viewTree = view.bot().tree();
 
-		final SWTBotShell preferenceShell = openPreferences();
+		final SWTBotShell preferenceShell = openPreferencesDialog();
 
 		preferenceShell.bot().button(PreferencesConstants.BUTTON_RESTORE_DEFAULTS).click();
 		preferenceShell.bot().button(PreferencesConstants.BUTTON_APPLY_AND_CLOSE).click();
