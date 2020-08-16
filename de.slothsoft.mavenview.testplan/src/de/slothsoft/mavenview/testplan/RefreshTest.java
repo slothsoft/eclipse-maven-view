@@ -35,6 +35,7 @@ public class RefreshTest extends AbstractMavenViewTest {
 
 		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
+		view.show();
 		view.toolbarButton(MavenViewConstants.COMMAND_REFRESH).click();
 
 		final SWTBotTree mavenProjectTree = view.bot().tree();
