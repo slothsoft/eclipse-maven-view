@@ -26,6 +26,8 @@ public abstract class AbstractFetchMavenProjectsTest {
 	@Before
 	public void setUp() throws CoreException {
 		deleteAllProjects();
+		MavenViewPreferences.setAlwaysSelectedProjects(null);
+		MavenViewPreferences.setNeverSelectedProjects(null);
 	}
 
 	@After
@@ -244,4 +246,48 @@ public abstract class AbstractFetchMavenProjectsTest {
 			Assert.assertEquals(mavenProject1, mavenProjects[0]);
 		}
 	}
+
+	@Test
+	public void testNeverShown() throws Exception {
+		final IProject project = createProject();
+		setProjectNatures(project, InitialProjectSelection.MAVEN_NATURE);
+		MavenViewPreferences.setNeverSelectedProjects(project);
+
+		final IProject[] mavenProjects = fetchMavenProjects();
+
+		Assert.assertNotNull(mavenProjects);
+		Assert.assertEquals(0, mavenProjects.length);
+	}
+
+	@Test
+	public void testAlwaysShown() throws Exception {
+		final IProject mavenProject1 = createProject("1");
+		setProjectNatures(mavenProject1, InitialProjectSelection.MAVEN_NATURE);
+
+		final IProject mavenProject2 = createProject("2", mavenProject1.getLocation().append("2"));
+		setProjectNatures(mavenProject2, InitialProjectSelection.MAVEN_NATURE);
+		MavenViewPreferences.setAlwaysSelectedProjects(mavenProject2);
+
+		final IProject[] mavenProjects = fetchMavenProjects();
+
+		Assert.assertNotNull(mavenProjects);
+
+		Assert.assertEquals(2, mavenProjects.length);
+		Assert.assertEquals(mavenProject1, mavenProjects[0]);
+		Assert.assertEquals(mavenProject2, mavenProjects[1]);
+	}
+
+	@Test
+	public void testAlwaysShownButNotTwice() throws Exception {
+		final IProject project = createProject();
+		setProjectNatures(project, InitialProjectSelection.MAVEN_NATURE);
+		MavenViewPreferences.setAlwaysSelectedProjects(project);
+
+		final IProject[] mavenProjects = fetchMavenProjects();
+
+		Assert.assertNotNull(mavenProjects);
+		Assert.assertEquals(1, mavenProjects.length);
+		Assert.assertEquals(project, mavenProjects[0]);
+	}
+
 }

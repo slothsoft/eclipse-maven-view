@@ -1,6 +1,8 @@
 package de.slothsoft.mavenview.testplan;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -26,6 +28,7 @@ import de.slothsoft.mavenview.MavenViewPlugin;
 import de.slothsoft.mavenview.MavenViewPreferences;
 import de.slothsoft.mavenview.Phase;
 import de.slothsoft.mavenview.testplan.constants.CommonConstants;
+import de.slothsoft.mavenview.testplan.constants.MavenViewConstants;
 import de.slothsoft.mavenview.testplan.constants.PreferencesConstants;
 import de.slothsoft.mavenview.testplan.constants.WorkbenchConstants;
 import de.slothsoft.mavenview.testplan.data.MavenGav;
@@ -48,6 +51,8 @@ public class PreferencesTest extends AbstractMavenViewTest {
 		final IPreferenceStore preferences = MavenViewPlugin.getDefault().getPreferenceStore();
 		preferences.setToDefault(MavenViewPreferences.DISPLAYED_PHASES);
 		preferences.setToDefault(MavenViewPreferences.INITIAL_PROJECT_SELECTION);
+		preferences.setToDefault(MavenViewPreferences.ALWAYS_SELECTED_PROJECTS);
+		preferences.setToDefault(MavenViewPreferences.NEVER_SELECTED_PROJECTS);
 	}
 
 	@Test
@@ -200,5 +205,97 @@ public class PreferencesTest extends AbstractMavenViewTest {
 		for (int i = 0; i < phases.length; i++) {
 			Assert.assertEquals(phases[i].getDisplayName(), projectItem.getItems()[i].getText());
 		}
+	}
+
+	@Test
+	public void testP10_ChangeDisplayedProjectsNoChange() throws Exception {
+
+		final IProject[] projects = this.projectFactory.createMavenProjectWithModulesViaDialog(new MavenGav(),
+				UUID.randomUUID().toString());
+
+		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotTree viewTree = view.bot().tree();
+
+		final List<String> projectNames = new ArrayList<>(projects.length);
+		for (final SWTBotTreeItem item : viewTree.getAllItems()) {
+			projectNames.add(item.getText());
+		}
+
+		final SWTBotShell changeDisplayedProjects = openChangeDisplayedProjectsDialog(view);
+		changeDisplayedProjects.bot().button(CommonConstants.BUTTON_OK).click();
+
+		for (final String projectName : projectNames) {
+			assertItemExists(viewTree, projectName);
+		}
+	}
+
+	private static void assertItemExists(final SWTBotTree tree, final String treeItemText) {
+		Assert.assertNotNull("Item should be visible!", tree.getTreeItem(treeItemText));
+	}
+
+	private static void assertItemDoesNotExist(final SWTBotTree tree, final String treeItemText) {
+		for (final SWTBotTreeItem treeItem : tree.getAllItems()) {
+			Assert.assertNotEquals("Item should not be visible!", treeItemText, treeItem.getText());
+		}
+	}
+
+	private SWTBotShell openChangeDisplayedProjectsDialog(SWTBotView mavenView) {
+		addToTearDown(this::clearChangeDisplayedProjectsDialog);
+
+		mavenView.toolbarButton(MavenViewConstants.COMMAND_CHANGE_DISPLAYED_PROJECTS).click();
+		this.bot.waitUntil(Conditions.shellIsActive(MavenViewConstants.COMMAND_CHANGE_DISPLAYED_PROJECTS));
+
+		return this.bot.activeShell();
+	}
+
+	private void clearChangeDisplayedProjectsDialog() {
+		final SWTBotShell activeShell = this.bot.activeShell();
+		if (MavenViewConstants.COMMAND_CHANGE_DISPLAYED_PROJECTS.equals(activeShell.getText())) {
+			activeShell.close();
+		}
+	}
+
+	@Test
+	public void testP11_ChangeDisplayedProjectsNever() throws Exception {
+
+		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
+		final String projectName = project.getName();
+
+		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotTree viewTree = view.bot().tree();
+
+		assertItemExists(viewTree, projectName);
+
+		final SWTBotShell changeDisplayedProjects = openChangeDisplayedProjectsDialog(view);
+
+		final SWTBotTable table = changeDisplayedProjects.bot().table();
+		table.getTableItem(projectName).select();
+		table.getTableItem(projectName).select();
+
+		changeDisplayedProjects.bot().button(CommonConstants.BUTTON_OK).click();
+
+		assertItemDoesNotExist(viewTree, projectName);
+	}
+
+	@Test
+	public void testP12_ChangeDisplayedProjectsAlways() throws Exception {
+
+		final IProject[] projects = this.projectFactory.createMavenProjectWithModulesViaDialog(new MavenGav(),
+				UUID.randomUUID().toString());
+		final String moduleName = projects[1].getName();
+
+		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotTree viewTree = view.bot().tree();
+
+		assertItemDoesNotExist(viewTree, moduleName);
+
+		final SWTBotShell changeDisplayedProjects = openChangeDisplayedProjectsDialog(view);
+
+		final SWTBotTable table = changeDisplayedProjects.bot().table();
+		table.getTableItem(moduleName).select();
+
+		changeDisplayedProjects.bot().button(CommonConstants.BUTTON_OK).click();
+
+		assertItemExists(viewTree, moduleName);
 	}
 }

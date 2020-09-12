@@ -19,6 +19,10 @@
             id="de.slothsoft.mavenview.commands.refresh"
             name="%command.refresh">
       </command>
+      <command
+            id="de.slothsoft.mavenview.commands.changeDisplayedProjects"
+            name="%command.changeDisplayedProjects">
+      </command>
    </extension>
    
    <extension
@@ -31,6 +35,10 @@
             commandId="de.slothsoft.mavenview.commands.refresh"
             icon="icons/refresh.png">
       </image>
+      <image
+            commandId="de.slothsoft.mavenview.commands.changeDisplayedProjects"
+            icon="icons/change-displayed-project.png">
+      </image>
    </extension>
    
    <extension
@@ -42,6 +50,10 @@
       <handler
             class="de.slothsoft.mavenview.internal.RefreshHandler"
             commandId="de.slothsoft.mavenview.commands.refresh">
+      </handler>
+      <handler
+            class="de.slothsoft.mavenview.internal.ChangeDisplayedProjectsHandler"
+            commandId="de.slothsoft.mavenview.commands.changeDisplayedProjects">
       </handler>
    </extension>
    
@@ -59,6 +71,13 @@
          <command
                commandId="de.slothsoft.mavenview.commands.refresh"
                id="refresh" />
+         <separator
+               name="de.slothsoft.mavenview.separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.slothsoft.mavenview.commands.changeDisplayedProjects"
+               id="changeDisplayedProjects" />
       </menuContribution>
       <menuContribution
             allPopups="false"
@@ -75,6 +94,13 @@
                commandId="de.slothsoft.mavenview.commands.refresh"
                id="refresh">
          </command>
+         <separator
+               name="de.slothsoft.mavenview.separator2"
+               visible="true">
+         </separator>
+         <command
+               commandId="de.slothsoft.mavenview.commands.changeDisplayedProjects"
+               id="changeDisplayedProjects" />
       </menuContribution>
    </extension>
    

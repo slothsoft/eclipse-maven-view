@@ -10,4 +10,5 @@ public interface MavenViewConstants {
 	String COMMAND_DISPLAY_SELECTED_CONSOLE = "Display Selected Console";
 	String COMMAND_TERMINATE = "Terminate";
 	String COMMAND_REMOVE_ALL_LAUNCHES = "Remove All Terminated Launches";
+	String COMMAND_CHANGE_DISPLAYED_PROJECTS = "Change Displayed Projects";
 }

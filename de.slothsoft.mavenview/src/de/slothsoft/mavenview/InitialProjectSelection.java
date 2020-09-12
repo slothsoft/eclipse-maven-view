@@ -1,7 +1,10 @@
 package de.slothsoft.mavenview;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.eclipse.core.resources.IProject;
@@ -81,14 +84,27 @@ public enum InitialProjectSelection implements Displayable {
 	public abstract IProject[] fetchMavenProjects();
 
 	static IProject[] collectMavenProjects(Predicate<IProject> tester) {
+		final Set<IProject> result = new HashSet<>();
+		for (final IProject project : fetchAllMavenProjects()) {
+			if (tester.test(project)) {
+				result.add(project);
+			}
+		}
+		result.removeAll(Arrays.asList(MavenViewPreferences.getNeverSelectedProjects()));
+		result.addAll(Arrays.asList(MavenViewPreferences.getAlwaysSelectedProjects()));
+
+		return result.toArray(new IProject[result.size()]);
+	}
+
+	public static IProject[] fetchAllMavenProjects() {
 		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		final IProject[] projects = workspaceRoot.getProjects();
 
-		final List<IProject> result = new ArrayList<>();
+		final Set<IProject> result = new HashSet<>();
 		for (int i = 0; i < projects.length; i++) {
 			final IProject project = projects[i];
 			try {
-				if (isMavenProject(project) && tester.test(project)) {
+				if (isMavenProject(project)) {
 					result.add(project);
 				}
 			} catch (final CoreException e) {

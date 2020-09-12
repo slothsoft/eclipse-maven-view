@@ -15,6 +15,7 @@ public class RefreshHandler extends AbstractHandler {
 		final IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
 		if (activePart instanceof MavenView) {
 			((MavenView) activePart).refresh();
+			return null;
 		}
 		throw new IllegalArgumentException("Cannot refresh view " + activePart + "!");
 	}
