@@ -54,6 +54,7 @@ public enum WorkbenchView {
 		for (final SWTBotView view : bot.views()) {
 			if (view.getTitle().equals(viewTitle)) {
 				view.show();
+				Assert.assertTrue("View should be active!", view.isActive());
 				return view;
 			}
 		}
