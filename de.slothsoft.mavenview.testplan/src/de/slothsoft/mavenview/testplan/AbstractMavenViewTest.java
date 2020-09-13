@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotWorkbenchPart;
@@ -34,6 +35,25 @@ public abstract class AbstractMavenViewTest {
 			@Override
 			public void run() {
 				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().forceActive();
+			}
+		});
+	}
+
+	@Before
+	@After
+	public final void closeRogueDialogs() {
+		UIThreadRunnable.syncExec(new VoidResult() {
+
+			@Override
+			public void run() {
+				final Shell workbenchWindowShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+
+				Shell activeShell = AbstractMavenViewTest.this.bot.getFinder().activeShell();
+				while (activeShell != null && activeShell != workbenchWindowShell) {
+					activeShell.close();
+					activeShell.dispose();
+					activeShell = AbstractMavenViewTest.this.bot.getFinder().activeShell();
+				}
 			}
 		});
 	}
