@@ -13,8 +13,10 @@ public class RefreshHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		final IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
+		System.out.println("RefreshHandler.execute(A)");
 		if (activePart instanceof MavenView) {
 			((MavenView) activePart).refresh();
+			System.out.println("RefreshHandler.execute(B)");
 			return null;
 		}
 		throw new IllegalArgumentException("Cannot refresh view " + activePart + "!");
