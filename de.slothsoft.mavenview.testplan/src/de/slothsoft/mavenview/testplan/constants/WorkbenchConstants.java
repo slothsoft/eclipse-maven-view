@@ -17,6 +17,7 @@ public interface WorkbenchConstants {
 	String GROUP_GENERAL = "General";
 
 	String VIEW_PROJECT_EXPLORER = "Project Explorer";
-	String VIEW_PACKAGE_EXPLORER = "Package Explorer";
+	String VIEW_PROJECT_EXPLORER_ID = "org.eclipse.ui.navigator.ProjectExplorer";
+	String VIEW_CONSOLE = "Console"; //$NON-NLS-1$
 	String VIEW_CONSOLE_ID = "org.eclipse.ui.console.ConsoleView"; //$NON-NLS-1$
 }

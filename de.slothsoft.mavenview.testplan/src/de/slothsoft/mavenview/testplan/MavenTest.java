@@ -45,14 +45,15 @@ public class MavenTest extends AbstractMavenViewTest {
 		this.projectFactory = new ProjectFactory(this.bot);
 		addToTearDown(this.projectFactory::dispose);
 
-		this.consoleView = WorkbenchView.CONSOLE.open(this.bot);
+		this.consoleView = WorkbenchView.CONSOLE.openProgrammatically(this.bot);
 		terminateAllLaunches();
 
-		this.mavenView = openMavenViewViaDialog();
+		this.mavenView = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 	}
 
 	@After
 	public void tearDown() {
+		this.mavenView.close();
 		terminateAllLaunches();
 	}
 

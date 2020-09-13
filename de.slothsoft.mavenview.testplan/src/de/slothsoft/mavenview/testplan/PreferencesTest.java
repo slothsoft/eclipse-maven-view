@@ -33,6 +33,7 @@ import de.slothsoft.mavenview.testplan.constants.PreferencesConstants;
 import de.slothsoft.mavenview.testplan.constants.WorkbenchConstants;
 import de.slothsoft.mavenview.testplan.data.MavenGav;
 import de.slothsoft.mavenview.testplan.data.ProjectFactory;
+import de.slothsoft.mavenview.testplan.data.WorkbenchView;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class PreferencesTest extends AbstractMavenViewTest {
@@ -43,6 +44,12 @@ public class PreferencesTest extends AbstractMavenViewTest {
 	public void setUp() {
 		this.projectFactory = new ProjectFactory(this.bot);
 		addToTearDown(this.projectFactory::dispose);
+	}
+
+	@Before
+	@After
+	public void closeMavenView() {
+		WorkbenchView.MAVEN.close(this.bot);
 	}
 
 	@Before
@@ -68,7 +75,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 
 		preferenceShell.bot().button(PreferencesConstants.BUTTON_APPLY_AND_CLOSE).click();
 
-		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotView view = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 		final SWTBotTree viewTree = view.bot().tree();
 
 		Assert.assertEquals(2, viewTree.getAllItems().length);
@@ -102,7 +109,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 		final IProject[] projects = this.projectFactory.createMavenProjectWithModulesViaDialog(new MavenGav(),
 				UUID.randomUUID().toString());
 
-		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotView view = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 		final SWTBotTree viewTree = view.bot().tree();
 
 		final SWTBotShell preferenceShell = openPreferencesDialog();
@@ -129,7 +136,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 
 		preferenceShell.bot().button(PreferencesConstants.BUTTON_APPLY_AND_CLOSE).click();
 
-		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotView view = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 		final SWTBotTree viewTree = view.bot().tree();
 
 		Assert.assertEquals(1, viewTree.getAllItems().length);
@@ -161,7 +168,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 
 		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
-		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotView view = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 		final SWTBotTree viewTree = view.bot().tree();
 
 		final SWTBotShell preferenceShell = openPreferencesDialog();
@@ -187,7 +194,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 		final IProject[] projects = this.projectFactory.createMavenProjectWithModulesViaDialog(new MavenGav(),
 				UUID.randomUUID().toString());
 
-		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotView view = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 		final SWTBotTree viewTree = view.bot().tree();
 
 		final SWTBotShell preferenceShell = openPreferencesDialog();
@@ -213,7 +220,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 		final IProject[] projects = this.projectFactory.createMavenProjectWithModulesViaDialog(new MavenGav(),
 				UUID.randomUUID().toString());
 
-		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotView view = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 		final SWTBotTree viewTree = view.bot().tree();
 
 		final List<String> projectNames = new ArrayList<>(projects.length);
@@ -261,7 +268,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 		final String projectName = project.getName();
 
-		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotView view = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 		final SWTBotTree viewTree = view.bot().tree();
 
 		assertItemExists(viewTree, projectName);
@@ -284,7 +291,7 @@ public class PreferencesTest extends AbstractMavenViewTest {
 				UUID.randomUUID().toString());
 		final String moduleName = projects[1].getName();
 
-		final SWTBotView view = openMavenViewViaDialog();
+		final SWTBotView view = WorkbenchView.MAVEN.openProgrammatically(this.bot);
 		final SWTBotTree viewTree = view.bot().tree();
 
 		assertItemDoesNotExist(viewTree, moduleName);

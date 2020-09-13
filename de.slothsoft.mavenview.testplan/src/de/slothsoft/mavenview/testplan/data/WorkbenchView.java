@@ -10,32 +10,36 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.junit.Assert;
 
+import de.slothsoft.mavenview.MavenView;
 import de.slothsoft.mavenview.testplan.constants.CommonConstants;
 import de.slothsoft.mavenview.testplan.constants.MavenViewConstants;
 import de.slothsoft.mavenview.testplan.constants.WorkbenchConstants;
 
 public enum WorkbenchView {
-	CONSOLE {
+	MAVEN(MavenViewConstants.VIEW_GROUP, MavenViewConstants.VIEW_TITLE, MavenView.ID),
 
-		@Override
-		public SWTBotView open(SWTWorkbenchBot bot) {
-			return openViewProgrammatically(bot, WorkbenchConstants.VIEW_CONSOLE_ID);
-		}
-	},
+	CONSOLE(WorkbenchConstants.GROUP_GENERAL, WorkbenchConstants.VIEW_CONSOLE, WorkbenchConstants.VIEW_CONSOLE_ID),
 
-	PROJECT_EXPLORER {
-		@Override
-		public SWTBotView open(SWTWorkbenchBot bot) {
-			return getOrOpenViewViaDialog(bot, WorkbenchConstants.GROUP_GENERAL,
-					WorkbenchConstants.VIEW_PROJECT_EXPLORER);
-		}
-	},
+	PROJECT_EXPLORER(WorkbenchConstants.GROUP_GENERAL, WorkbenchConstants.VIEW_PROJECT_EXPLORER,
+			WorkbenchConstants.VIEW_PROJECT_EXPLORER_ID),
 
 	;
 
-	public abstract SWTBotView open(SWTWorkbenchBot bot);
+	private String viewGroup;
+	private String viewTitle;
+	private String id;
 
-	public static SWTBotView openViewProgrammatically(SWTWorkbenchBot bot, String viewId) {
+	private WorkbenchView(String group, String title, String id) {
+		this.viewGroup = group;
+		this.viewTitle = title;
+		this.id = id;
+	}
+
+	public SWTBotView openProgrammatically(SWTWorkbenchBot bot) {
+		return openViewProgrammatically(bot, this.id);
+	}
+
+	static SWTBotView openViewProgrammatically(SWTWorkbenchBot bot, String viewId) {
 		final IViewReference[] view = {null};
 		Display.getDefault().syncExec(() -> {
 			try {
@@ -47,21 +51,30 @@ public enum WorkbenchView {
 			}
 		});
 		Assert.assertNotNull("Could not open view " + viewId);
-		return new SWTBotView(view[0], bot);
+
+		final SWTBotView result = new SWTBotView(view[0], bot);
+		Assert.assertTrue("View should be active!", result.isActive());
+		return result;
 	}
 
-	public static SWTBotView getOrOpenViewViaDialog(SWTWorkbenchBot bot, String viewGroup, String viewTitle) {
-		for (final SWTBotView view : bot.views()) {
-			if (view.getTitle().equals(viewTitle)) {
-				view.show();
-				Assert.assertTrue("View should be active!", view.isActive());
-				return view;
-			}
+	public SWTBotView openViaDialog(SWTWorkbenchBot bot) {
+		final SWTBotView view = findView(bot);
+		if (view != null) {
+			view.show();
+			Assert.assertTrue("View should be active!", view.isActive());
+			return view;
 		}
-		return openViewViaDialog(bot, viewGroup, viewTitle);
+		return openViewViaDialog(bot, this.viewGroup, this.viewTitle);
 	}
 
-	public static SWTBotView openViewViaDialog(SWTWorkbenchBot bot, String viewGroup, String viewTitle) {
+	private SWTBotView findView(SWTWorkbenchBot bot) {
+		for (final SWTBotView view : bot.views()) {
+			if (view.getTitle().equals(this.viewTitle) || view.getReference().getId().equals(this.id)) return view;
+		}
+		return null;
+	}
+
+	static SWTBotView openViewViaDialog(SWTWorkbenchBot bot, String viewGroup, String viewTitle) {
 		bot.menu(WorkbenchConstants.MENU_WINDOW).menu(WorkbenchConstants.SUB_MENU_SHOW_VIEW)
 				.menu(WorkbenchConstants.COMMAND_OTHER).click();
 
@@ -76,5 +89,12 @@ public enum WorkbenchView {
 		bot.button(CommonConstants.BUTTON_OPEN).click();
 
 		return bot.viewByTitle(viewTitle);
+	}
+
+	public void close(SWTWorkbenchBot bot) {
+		final SWTBotView view = findView(bot);
+		if (view != null) {
+			view.close();
+		}
 	}
 }

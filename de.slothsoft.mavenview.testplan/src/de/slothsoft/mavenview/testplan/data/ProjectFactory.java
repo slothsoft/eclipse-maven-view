@@ -116,7 +116,7 @@ public class ProjectFactory {
 		final IProject parentProject = createMavenProjectViaDialog(gav.type("pom"));
 		result.add(parentProject);
 
-		final SWTBotView projectExplorer = WorkbenchView.PROJECT_EXPLORER.open(this.bot);
+		final SWTBotView projectExplorer = WorkbenchView.PROJECT_EXPLORER.openViaDialog(this.bot);
 
 		for (final String module : modules) {
 			projectExplorer.bot().tree().getTreeItem(parentProject.getName()).select();
@@ -148,7 +148,7 @@ public class ProjectFactory {
 	}
 
 	public void createMavenLaunchConfig(IProject project, String mavenLaunchConfigName, MavenRunConfig config) {
-		final SWTBotView projectExplorer = WorkbenchView.PROJECT_EXPLORER.open(this.bot);
+		final SWTBotView projectExplorer = WorkbenchView.PROJECT_EXPLORER.openViaDialog(this.bot);
 
 		final SWTBotTree projectTree = projectExplorer.bot().tree();
 		projectTree.getTreeItem(project.getName()).expand();
