@@ -1,6 +1,7 @@
 package de.slothsoft.mavenview.testplan.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -10,10 +11,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.waits.Conditions;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 
 import de.slothsoft.mavenview.MavenRunConfig;
@@ -42,10 +45,15 @@ public class ProjectFactory {
 		this.bot.menu(WorkbenchConstants.MENU_FILE).menu(WorkbenchConstants.SUB_MENU_NEW)
 				.menu(WorkbenchConstants.COMMAND_OTHER).click();
 		this.bot.waitUntil(Conditions.shellIsActive(NewProjectConstants.DIALOG_TITLE));
-
-		this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).expand();
-		this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).getNode(NewProjectConstants.PROJECT_MAVEN)
-				.select();
+		try {
+			this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).expand();
+			this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).getNode(NewProjectConstants.PROJECT_MAVEN)
+					.select();
+		} catch (final WidgetNotFoundException e) {
+			System.out.println("ProjectFactory.createMavenProjectViaDialog()");
+			printTreeItems(this.bot.tree().getAllItems(), 0);
+			throw e;
+		}
 
 		this.bot.button(CommonConstants.BUTTON_NEXT).click();
 
@@ -71,6 +79,13 @@ public class ProjectFactory {
 		clearDiscoverM2ConnectorsDialogIfNecessary();
 
 		return project;
+	}
+
+	private void printTreeItems(SWTBotTreeItem[] swtBotTreeItems, int indent) {
+		for (final SWTBotTreeItem swtBotTreeItem : swtBotTreeItems) {
+			System.out.println(String.join("", Collections.nCopies(indent, "  ")) + swtBotTreeItem.getText());
+			printTreeItems(swtBotTreeItem.getItems(), indent + 1);
+		}
 	}
 
 	private void addProjectDeletionToTearDown(final IProject project) {
