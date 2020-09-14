@@ -42,9 +42,20 @@ public class ProjectFactory {
 	public IProject createMavenProjectViaDialog(MavenGav gav) {
 		this.tearDowns.add(this::clearNewProjectDialog); // just in case
 
+		try {
+			return doCreateMavenProjectViaDialog(gav);
+		} catch (final WidgetNotFoundException e) {
+			// try again if necessary
+			return doCreateMavenProjectViaDialog(gav);
+		}
+
+	}
+	private IProject doCreateMavenProjectViaDialog(MavenGav gav) {
+
 		this.bot.menu(WorkbenchConstants.MENU_FILE).menu(WorkbenchConstants.SUB_MENU_NEW)
 				.menu(WorkbenchConstants.COMMAND_OTHER).click();
 		this.bot.waitUntil(Conditions.shellIsActive(NewProjectConstants.DIALOG_TITLE));
+
 		try {
 			this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).expand();
 			this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).getNode(NewProjectConstants.PROJECT_MAVEN)

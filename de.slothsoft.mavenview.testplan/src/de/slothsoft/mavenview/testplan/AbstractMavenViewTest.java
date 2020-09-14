@@ -6,12 +6,12 @@ import java.util.function.Predicate;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotWorkbenchPart;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
-import org.eclipse.swtbot.swt.finder.results.VoidResult;
 import org.eclipse.ui.PlatformUI;
 import org.junit.After;
 import org.junit.Assert;
@@ -30,31 +30,25 @@ public abstract class AbstractMavenViewTest {
 
 	@Before
 	public void setUpShell() {
-		UIThreadRunnable.syncExec(new VoidResult() {
-
-			@Override
-			public void run() {
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().forceActive();
-			}
-		});
+		UIThreadRunnable.syncExec(() -> PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().forceActive());
 	}
 
 	@Before
 	@After
 	public final void closeRogueDialogs() {
-		UIThreadRunnable.syncExec(new VoidResult() {
+		UIThreadRunnable.syncExec(() -> {
+			final Shell workbenchWindowShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 
-			@Override
-			public void run() {
-				final Shell workbenchWindowShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-
-				Shell activeShell = AbstractMavenViewTest.this.bot.getFinder().activeShell();
-				while (activeShell != null && activeShell != workbenchWindowShell) {
-					activeShell.close();
-					activeShell.dispose();
-					activeShell = AbstractMavenViewTest.this.bot.getFinder().activeShell();
+			for (final Shell rogueShell : Display.getDefault().getShells()) {
+				if (rogueShell != workbenchWindowShell) {
+					System.out.println("AbstractMavenViewTest.closeRogueDialogs(" + rogueShell.getText() + ")");
+					rogueShell.close();
+					rogueShell.dispose();
 				}
 			}
+
+			workbenchWindowShell.forceActive();
+			workbenchWindowShell.forceFocus();
 		});
 	}
 
