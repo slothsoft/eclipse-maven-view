@@ -50,7 +50,7 @@ public class ProjectFactory {
 			this.bot.tree().getTreeItem(NewProjectConstants.GROUP_MAVEN).getNode(NewProjectConstants.PROJECT_MAVEN)
 					.select();
 		} catch (final WidgetNotFoundException e) {
-			System.out.println("ProjectFactory.createMavenProjectViaDialog()");
+			System.out.println("ProjectFactory.createMavenProjectViaDialog(New Dialog Contents)");
 			printTreeItems(this.bot.tree().getAllItems(), 0);
 			throw e;
 		}

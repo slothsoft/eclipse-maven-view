@@ -13,12 +13,9 @@ public class RefreshHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		System.out.println("RefreshHandler.execute(A)");
 		final MavenView mavenView = findMavenView(event);
 		if (mavenView != null) {
-			System.out.println("RefreshHandler.execute(B)");
 			mavenView.refresh();
-			System.out.println("RefreshHandler.execute(C)");
 		}
 		return null;
 	}

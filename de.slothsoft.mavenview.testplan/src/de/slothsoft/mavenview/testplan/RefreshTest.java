@@ -43,9 +43,7 @@ public class RefreshTest extends AbstractMavenViewTest {
 	public void testR01_RefreshView() throws Exception {
 		final IProject project = this.projectFactory.createMavenProjectViaDialog(new MavenGav());
 
-		System.out.println("RefreshTest.testR01_RefreshView(A)");
 		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_REFRESH);
-		System.out.println("RefreshTest.testR01_RefreshView(B)");
 
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 		Assert.assertEquals(1, mavenProjectTree.getAllItems().length);
@@ -59,9 +57,7 @@ public class RefreshTest extends AbstractMavenViewTest {
 		this.projectFactory.createMavenLaunchConfig(project, mavenLaunchConfigName,
 				new MavenRunConfig().phases(Phase.CLEAN, Phase.INSTALL));
 
-		System.out.println("RefreshTest.testR01_RefreshView(A)");
 		clickToolbarButton(this.mavenView, MavenViewConstants.COMMAND_REFRESH);
-		System.out.println("RefreshTest.testR01_RefreshView(B)");
 
 		final SWTBotTree mavenProjectTree = this.mavenView.bot().tree();
 		Assert.assertEquals(1, mavenProjectTree.getAllItems().length);
