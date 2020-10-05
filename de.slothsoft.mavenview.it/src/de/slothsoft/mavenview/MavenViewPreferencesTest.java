@@ -118,26 +118,20 @@ public class MavenViewPreferencesTest {
 	@Test
 	public void testGetAlwaysSelectedProject() throws Exception {
 		final String projectName = this.testName.getMethodName();
-		final IProject project = createProject(projectName);
+		final IProject project = AbstractProjectBasedTest.createMavenProject(projectName);
 
 		this.preferences.setValue(MavenViewPreferences.ALWAYS_SELECTED_PROJECTS, projectName);
 
 		Assert.assertArrayEquals(new IProject[]{project}, MavenViewPreferences.getAlwaysSelectedProjects());
 	}
 
-	private static IProject createProject(String projectName) throws CoreException {
-		final IProject result = AbstractFetchMavenProjectsTest.createProject(projectName);
-		AbstractFetchMavenProjectsTest.setProjectNatures(result, InitialProjectSelection.MAVEN_NATURE);
-		return result;
-	}
-
 	@Test
 	public void testGetAlwaysSelectedProjects() throws Exception {
 		final String projectName1 = this.testName.getMethodName() + "-1";
-		final IProject project1 = createProject(projectName1);
+		final IProject project1 = AbstractProjectBasedTest.createMavenProject(projectName1);
 
 		final String projectName2 = this.testName.getMethodName() + "-2";
-		final IProject project2 = createProject(projectName2);
+		final IProject project2 = AbstractProjectBasedTest.createMavenProject(projectName2);
 
 		this.preferences.setValue(MavenViewPreferences.ALWAYS_SELECTED_PROJECTS,
 				projectName1 + MavenViewPreferences.SEPARATOR + projectName2);
@@ -155,7 +149,7 @@ public class MavenViewPreferencesTest {
 	@Test
 	public void testSetAlwaysSelectedProject() throws Exception {
 		final String projectName = this.testName.getMethodName();
-		final IProject project = createProject(projectName);
+		final IProject project = AbstractProjectBasedTest.createMavenProject(projectName);
 
 		MavenViewPreferences.setAlwaysSelectedProjects(new IProject[]{project});
 
@@ -165,10 +159,10 @@ public class MavenViewPreferencesTest {
 	@Test
 	public void testSetAlwaysSelectedProjects() throws Exception {
 		final String projectName1 = this.testName.getMethodName() + "-1";
-		final IProject project1 = createProject(projectName1);
+		final IProject project1 = AbstractProjectBasedTest.createMavenProject(projectName1);
 
 		final String projectName2 = this.testName.getMethodName() + "-2";
-		final IProject project2 = createProject(projectName2);
+		final IProject project2 = AbstractProjectBasedTest.createMavenProject(projectName2);
 
 		MavenViewPreferences.setAlwaysSelectedProjects(project1, project2);
 
@@ -195,7 +189,7 @@ public class MavenViewPreferencesTest {
 	@Test
 	public void testGetNeverSelectedProject() throws Exception {
 		final String projectName = this.testName.getMethodName();
-		final IProject project = createProject(projectName);
+		final IProject project = AbstractProjectBasedTest.createMavenProject(projectName);
 
 		this.preferences.setValue(MavenViewPreferences.NEVER_SELECTED_PROJECTS, projectName);
 
@@ -205,10 +199,10 @@ public class MavenViewPreferencesTest {
 	@Test
 	public void testGetNeverSelectedProjects() throws Exception {
 		final String projectName1 = this.testName.getMethodName() + "-1";
-		final IProject project1 = createProject(projectName1);
+		final IProject project1 = AbstractProjectBasedTest.createMavenProject(projectName1);
 
 		final String projectName2 = this.testName.getMethodName() + "-2";
-		final IProject project2 = createProject(projectName2);
+		final IProject project2 = AbstractProjectBasedTest.createMavenProject(projectName2);
 
 		this.preferences.setValue(MavenViewPreferences.NEVER_SELECTED_PROJECTS,
 				projectName1 + MavenViewPreferences.SEPARATOR + projectName2);
@@ -226,7 +220,7 @@ public class MavenViewPreferencesTest {
 	@Test
 	public void testSetNeverSelectedProject() throws Exception {
 		final String projectName = this.testName.getMethodName();
-		final IProject project = createProject(projectName);
+		final IProject project = AbstractProjectBasedTest.createMavenProject(projectName);
 
 		MavenViewPreferences.setNeverSelectedProjects(new IProject[]{project});
 
@@ -236,10 +230,10 @@ public class MavenViewPreferencesTest {
 	@Test
 	public void testSetNeverSelectedProjects() throws Exception {
 		final String projectName1 = this.testName.getMethodName() + "-1";
-		final IProject project1 = createProject(projectName1);
+		final IProject project1 = AbstractProjectBasedTest.createMavenProject(projectName1);
 
 		final String projectName2 = this.testName.getMethodName() + "-2";
-		final IProject project2 = createProject(projectName2);
+		final IProject project2 = AbstractProjectBasedTest.createMavenProject(projectName2);
 
 		MavenViewPreferences.setNeverSelectedProjects(project1, project2);
 

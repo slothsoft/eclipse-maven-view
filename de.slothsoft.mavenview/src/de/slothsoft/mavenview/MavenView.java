@@ -18,7 +18,7 @@ public class MavenView extends ViewPart {
 	 */
 	public static final String ID = "de.slothsoft.mavenview.MavenView";
 
-	private TreeViewer viewer;
+	TreeViewer viewer;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -51,6 +51,14 @@ public class MavenView extends ViewPart {
 	@Override
 	public void setFocus() {
 		this.viewer.getControl().setFocus();
+	}
+
+	public void collapseAll() {
+		this.viewer.collapseAll();
+	}
+
+	public void expandAll() {
+		this.viewer.expandAll();
 	}
 
 }

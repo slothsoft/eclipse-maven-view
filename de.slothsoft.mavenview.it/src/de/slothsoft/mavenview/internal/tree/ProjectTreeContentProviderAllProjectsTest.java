@@ -13,9 +13,7 @@ import de.slothsoft.mavenview.MavenViewPreferences;
 public class ProjectTreeContentProviderAllProjectsTest extends InitialProjectSelectionAllProjectsTest {
 
 	@Before
-	@Override
 	public void setUp() throws CoreException {
-		super.setUp();
 		MavenViewPreferences.setInitialProjectSelection(InitialProjectSelection.ALL_PROJECTS);
 	}
 

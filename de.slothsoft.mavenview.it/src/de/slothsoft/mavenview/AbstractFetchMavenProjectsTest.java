@@ -15,60 +15,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-public abstract class AbstractFetchMavenProjectsTest {
-
-	protected static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
-	protected static final String MAVEN_NATURE = InitialProjectSelection.MAVEN_NATURE;
-
-	@Rule
-	public TestName testName = new TestName();
-
-	@Before
-	public void setUp() throws CoreException {
-		deleteAllProjects();
-		MavenViewPreferences.setAlwaysSelectedProjects(null);
-		MavenViewPreferences.setNeverSelectedProjects(null);
-	}
-
-	@After
-	public void tearDown() throws CoreException {
-		deleteAllProjects();
-	}
-
-	protected static void deleteAllProjects() throws CoreException {
-		final IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		for (final IProject project : workspaceRoot.getProjects()) {
-			project.delete(true, new NullProgressMonitor());
-		}
-	}
-
-	protected IProject createProject() throws CoreException {
-		return createProject(this.testName.getMethodName());
-	}
-
-	protected static IProject createProject(String projectName) throws CoreException {
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final IProject project = root.getProject(projectName);
-		project.create(null);
-		project.open(null);
-		return project;
-	}
-
-	@SuppressWarnings("deprecation")
-	protected static IProject createProject(String projectName, IPath location) throws CoreException {
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final IProject project = root.getProject(projectName);
-		JavaCapabilityConfigurationPage.createProject(project, location, null);
-		return project;
-	}
-
-	protected static void setProjectNatures(final IProject project, String... natures) throws CoreException {
-		final IProjectDescription description = project.getDescription();
-		description.setNatureIds(natures);
-		project.setDescription(description, null);
-	}
-
-	// actual test cases
+public abstract class AbstractFetchMavenProjectsTest extends AbstractProjectBasedTest {
 
 	@Test
 	public void testFetchMavenProjectsNoProject() throws Exception {
@@ -81,7 +28,7 @@ public abstract class AbstractFetchMavenProjectsTest {
 
 	@Test
 	public void testFetchMavenProjectsNoMavenProject() throws Exception {
-		createProject();
+		createDefaultProject();
 
 		final IProject[] mavenProjects = fetchMavenProjects();
 
@@ -91,7 +38,7 @@ public abstract class AbstractFetchMavenProjectsTest {
 
 	@Test
 	public void testFetchMavenProjectsMavenProject() throws Exception {
-		final IProject project = createProject();
+		final IProject project = createDefaultProject();
 		setProjectNatures(project, InitialProjectSelection.MAVEN_NATURE);
 
 		final IProject[] mavenProjects = fetchMavenProjects();
@@ -103,7 +50,7 @@ public abstract class AbstractFetchMavenProjectsTest {
 
 	@Test
 	public void testFetchMavenProjectsMavenAndStuffProject() throws Exception {
-		final IProject project = createProject();
+		final IProject project = createDefaultProject();
 		setProjectNatures(project, JAVA_NATURE, InitialProjectSelection.MAVEN_NATURE);
 
 		final IProject[] mavenProjects = fetchMavenProjects();
@@ -121,7 +68,7 @@ public abstract class AbstractFetchMavenProjectsTest {
 		final IProject mavenProject2 = createProject("2");
 		setProjectNatures(mavenProject2, InitialProjectSelection.MAVEN_NATURE);
 
-		createProject();
+		createDefaultProject();
 
 		final IProject[] mavenProjects = fetchMavenProjects();
 
@@ -133,7 +80,7 @@ public abstract class AbstractFetchMavenProjectsTest {
 
 	@Test
 	public void testFetchMavenProjectsClosedMavenProject() throws Exception {
-		final IProject project = createProject();
+		final IProject project = createDefaultProject();
 		setProjectNatures(project, InitialProjectSelection.MAVEN_NATURE);
 		project.close(new NullProgressMonitor());
 
@@ -249,7 +196,7 @@ public abstract class AbstractFetchMavenProjectsTest {
 
 	@Test
 	public void testNeverShown() throws Exception {
-		final IProject project = createProject();
+		final IProject project = createDefaultProject();
 		setProjectNatures(project, InitialProjectSelection.MAVEN_NATURE);
 		MavenViewPreferences.setNeverSelectedProjects(project);
 
@@ -279,7 +226,7 @@ public abstract class AbstractFetchMavenProjectsTest {
 
 	@Test
 	public void testAlwaysShownButNotTwice() throws Exception {
-		final IProject project = createProject();
+		final IProject project = createDefaultProject();
 		setProjectNatures(project, InitialProjectSelection.MAVEN_NATURE);
 		MavenViewPreferences.setAlwaysSelectedProjects(project);
 
